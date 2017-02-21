@@ -1,24 +1,25 @@
 using UnityEngine;
 using System;
 
-namespace NONE
+namespace NAMESPACE
 {
+	/// <summary>
+	/// Load a set of prefabs from a bitmap texture
+	/// </summary>
 	[ExecuteInEditMode]
 	public class TextureReader : MonoBehaviour
 	{
 		public bool reload;
-
 		public Texture2D inputTexture;
-
 		public ColorAndPrefabDictionary dict;
 
 
-		void Awake ()
+		void Awake()
 		{
 			LoadFromTexture();
 		}
 
-		void Update ()
+		void Update()
 		{
 			if (reload)
 			{
@@ -27,8 +28,11 @@ namespace NONE
 			}
 		}
 
-		void LoadFromTexture ()
+		void LoadFromTexture()
 		{
+			if (inputTexture == null)
+				return;
+
 			while (transform.childCount != 0)
 			{
 				DestroyImmediate(transform.GetChild(0).gameObject);
@@ -40,7 +44,7 @@ namespace NONE
 				{
 					GameObject prefab = dict.Find(inputTexture.GetPixel(x, y));
 
-					if(prefab != null)
+					if (prefab != null)
 						Instantiate(prefab, new Vector3(x, y), new Quaternion(), transform);
 				}
 			}
@@ -48,12 +52,12 @@ namespace NONE
 
 
 		[Serializable]
-		public class ColorAndPrefabDictionary	
+		public class ColorAndPrefabDictionary
 		{
 			[SerializeField]
 			CaP[] dictionary;
 
-			public GameObject Find (Color32 color)
+			public GameObject Find(Color32 color)
 			{
 				foreach (var item in dictionary)
 				{
@@ -64,7 +68,7 @@ namespace NONE
 				throw new Exception(color + " not in dictionary");
 			}
 
-			public Color32 Find (GameObject prefab)
+			public Color32 Find(GameObject prefab)
 			{
 				foreach (var item in dictionary)
 				{
@@ -78,7 +82,7 @@ namespace NONE
 			[Serializable]
 			private class CaP
 			{
-				public Color32 color = new Color32();
+				public Color32 color = Color.white;
 				public GameObject prefab = null;
 			}
 		}

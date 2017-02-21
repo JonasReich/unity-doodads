@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Spellfish
+namespace NAMESPACE
 {
     /// <summary>
     /// Hides/destroys a collection of GameObjects as soon as the game enters PlayMode
@@ -8,24 +8,28 @@ namespace Spellfish
     public class PlaymodeHider : MonoBehaviour
     {
 		/// <summary>
-		/// Whether the target should be destroyed. By default targets are disabled only
+		/// Whether the target should be destroyed. (Default: disable only)
 		/// </summary>
-        public bool destroy;
+		[Tooltip("Whether the target should be destroyed. \n(Default: disable only)")]
+        public bool destroy = false;
 
 		/// <summary>
 		/// Whether the script should affect the entire GameObject.
-		/// By default the scipt only targets the component itself
+		/// (Default: Target Component)
 		/// </summary>
-        public bool entireGameObject;
+		[Tooltip("Whether the script should affect the entire GameObject. \n(Default: Target Component)")]
+        public bool entireGameObject = false;
 
 		/// <summary>
-		/// Whether the script should target itslef. This is enabled by default
+		/// Whether the script should target itslef. (Default: enabled)
 		/// </summary>
+		[Tooltip("Whether the script should target itslef. \n(Default: enabled)")]
         public bool self = true;
-		
+
 		/// <summary>
 		/// The list of behaviours that are to be disabled/destroyed
 		/// </summary>
+		[Tooltip("The list of behaviours that are to be disabled/destroyed")]
         public MonoBehaviour[] targetList;
 
 
