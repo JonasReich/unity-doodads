@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Extended version of UnityEngine.Random

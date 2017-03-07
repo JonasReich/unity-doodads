@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	// Base types
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
     /// <summary>
     /// Hides/destroys a collection of GameObjects as soon as the game enters PlayMode

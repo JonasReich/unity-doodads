@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Singleton with a collection of LayerMasks

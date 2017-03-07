@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Provides extension methods for Unity LayerMasks

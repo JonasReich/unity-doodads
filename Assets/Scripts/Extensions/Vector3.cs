@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Provides extension methods for Unity's Vector3 class
@@ -11,16 +11,9 @@ namespace NAMESPACE
 		/// Set x, y, and z components of an existing Vector3 (single parameter).
 		/// </summary>
 		/// <param name="xyz">Length of all 3 axises</param>
-		/// <returns></returns>
-		static public Vector3 Set (this Vector3 vector, float xyz)
+		static public void Set (this Vector3 vector, float xyz)
 		{
-			return Set(vector, xyz, xyz, xyz);
-		}
-
-		static private Vector3 Set (Vector3 vector, float x, float y, float z)
-		{
-			vector.Set(x, y, z);
-			return vector;
+			vector.Set(xyz, xyz, xyz);
 		}
 
 		/// <summary>

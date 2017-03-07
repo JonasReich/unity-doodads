@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Load a set of prefabs from a bitmap texture

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NAMESPACE
+namespace UnityDoodats
 {
 	/// <summary>
 	/// Provides methods for array serialization that are not available from Unitys JsonUtility
