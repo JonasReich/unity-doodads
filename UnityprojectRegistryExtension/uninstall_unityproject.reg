@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.unityProject]
+[HKEY_CLASSES_ROOT\Unity.ProjectFile]
+[HKEY_CLASSES_ROOT\Unity.ProjectFile\DefaultIcon]
+[HKEY_CLASSES_ROOT\Unity.ProjectFile\shell]
+[HKEY_CLASSES_ROOT\Unity.ProjectFile\shell\open]
+[HKEY_CLASSES_ROOT\Unity.ProjectFile\shell\open\command]
