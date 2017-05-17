@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UnityDoodats
+namespace UnityDoodats.UI
 {
 	/// <summary>
 	/// Timer UI wrapper that displays a float time in integer format

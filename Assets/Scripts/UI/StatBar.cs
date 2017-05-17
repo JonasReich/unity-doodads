@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UnityDoodats
+namespace UnityDoodats.UI
 {
 	/// <summary>
 	/// Manages UI presentation of HP, Mana etc.
