@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace UnityDoodats.Examples
@@ -5,6 +6,7 @@ namespace UnityDoodats.Examples
 	/// <summary>
 	/// An adressbook contact
 	/// </summary>
+	[Serializable]
 	public class Contact
 	{
 		public Sprite picture;

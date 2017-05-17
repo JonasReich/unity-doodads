@@ -6,15 +6,15 @@ namespace UnityDoodats.UI
 	public class ScrolledList<TDataType> : MonoBehaviour
 	{
 		ScrolledListElement<TDataType> listElementPrefab;
+		public RectTransform containerTransform;
 
-		RectTransform containerTransform;
 		bool isInitialized;
 		List<GameObject> children = new List<GameObject>();
 
 
 		private void Awake()
 		{
-			Init();
+			//Init();
 		}
 
 
@@ -24,8 +24,6 @@ namespace UnityDoodats.UI
 				return;
 
 			listElementPrefab = GetComponentInChildren<ScrolledListElement<TDataType>>();
-			containerTransform = GetComponent<RectTransform>();
-
 			listElementPrefab.gameObject.SetActive(false);
 
 			isInitialized = true;

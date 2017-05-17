@@ -1,0 +1,21 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace UnityDoodats.Examples
+{
+
+	public class AdressBook : MonoBehaviour
+	{
+		public ScrolledContactList contactListUI;
+
+		public List<Contact> contacts;
+
+
+		// Use this for initialization
+		void Start()
+		{
+			contactListUI.LoadView(contacts);
+		}
+	}
+}
