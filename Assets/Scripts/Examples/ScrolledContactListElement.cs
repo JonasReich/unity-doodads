@@ -10,11 +10,6 @@ namespace UnityDoodats.Examples
 		public Text nameText;
 		public Text descriptionText;
 
-		public override void Click()
-		{
-			Debug.Log("Click: Adress Book Contact " + nameText + " - " + descriptionText);
-		}
-
 		public override void UpdateData(Contact data)
 		{
 			base.UpdateData(data);

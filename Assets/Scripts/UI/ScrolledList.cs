@@ -14,25 +14,12 @@ namespace UnityDoodats.UI
 
 		private void Awake()
 		{
-			//Init();
-		}
-
-
-		public void Init()
-		{
-			if (isInitialized)
-				return;
-
 			listElementPrefab = GetComponentInChildren<ScrolledListElement<TDataType>>();
 			listElementPrefab.gameObject.SetActive(false);
-
-			isInitialized = true;
 		}
 
 		public virtual void LoadView(IEnumerable<TDataType> elements)
 		{
-			Init();
-
 			UpdateList(elements);
 			gameObject.SetActive(true);
 		}

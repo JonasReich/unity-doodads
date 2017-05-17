@@ -23,7 +23,5 @@ namespace UnityDoodats.UI
 		{
 			DataCache = data;
 		}
-
-		public abstract void Click();
 	}
 }

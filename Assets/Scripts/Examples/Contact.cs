@@ -10,7 +10,10 @@ namespace UnityDoodats.Examples
 	public class Contact
 	{
 		public Sprite picture;
+
 		public string name;
+
+		[TextArea(5,10)]
 		public string description;
 	}
 }
