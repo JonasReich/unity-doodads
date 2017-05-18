@@ -1,3 +1,7 @@
+//-------------------------------------------
+// Copyright (c) 2017 - JonasReich
+//-------------------------------------------
+
 using System.Collections.Generic;
 
 namespace UnityDoodats

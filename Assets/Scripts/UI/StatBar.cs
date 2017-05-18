@@ -1,3 +1,7 @@
+//-------------------------------------------
+// Copyright (c) 2017 - JonasReich
+//-------------------------------------------
+
 using UnityEngine;
 using UnityEngine.UI;
 

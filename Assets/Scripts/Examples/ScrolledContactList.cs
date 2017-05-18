@@ -1,3 +1,7 @@
+//-------------------------------------------
+// Copyright (c) 2017 - JonasReich
+//-------------------------------------------
+
 using UnityDoodats.UI;
 
 namespace UnityDoodats.Examples
