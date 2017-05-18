@@ -5,7 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace JonasReich.UnityDoodats.Editor
+namespace UnityDoodats.Editor
 {
 	/// <summary>
 	/// Adds a 'Group' command to Unity's scene editor
