@@ -1,0 +1,32 @@
+//-------------------------------------------
+// (c) #YEAR# - #AUTHOR#
+//-------------------------------------------
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+namespace #NAMESPACE#
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	public class #SCRIPTNAME# : MonoBehaviour
+	{
+		void Awake ()
+		{
+			#NOTRIM#
+		}
+
+		void Start ()
+		{
+			#NOTRIM#
+		}
+	
+		void Update ()
+		{
+			#NOTRIM#
+		}
+	}
+}

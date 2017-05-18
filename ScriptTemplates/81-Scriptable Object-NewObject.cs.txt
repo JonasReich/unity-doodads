@@ -1,0 +1,19 @@
+//-------------------------------------------
+// (c) #YEAR# - #AUTHOR#
+//-------------------------------------------
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+namespace #NAMESPACE#
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	public class #SCRIPTNAME# : ScriptableObject
+	{
+		
+	}
+}
