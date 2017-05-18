@@ -8,15 +8,15 @@ namespace UnityDoodats.UI
 		ScrolledListElement<TDataType> listElementPrefab;
 		public RectTransform containerTransform;
 
-		bool isInitialized;
 		List<GameObject> children = new List<GameObject>();
 
 
-		private void Awake()
+		void Awake()
 		{
 			listElementPrefab = GetComponentInChildren<ScrolledListElement<TDataType>>();
 			listElementPrefab.gameObject.SetActive(false);
 		}
+
 
 		public virtual void LoadView(IEnumerable<TDataType> elements)
 		{
@@ -44,6 +44,7 @@ namespace UnityDoodats.UI
 			children.RemoveAt(0);
 			children.ForEach(c => Destroy(c.gameObject));
 		}
+
 
 		protected void RefreshChildren()
 		{
