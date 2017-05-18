@@ -51,7 +51,7 @@ namespace UnityDoodats.Editor
 
 		static string GetNamespaceForPath(string path)
 		{
-			string spacename = RemoveIllegalChars(Author) + "." + RemoveIllegalChars(ProductName);
+			string spacename = RemoveIllegalChars(ProductName);
 
 			if (path.Contains("Editor"))
 				spacename += ".Editor";
