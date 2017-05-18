@@ -38,7 +38,7 @@ namespace UnityDoodats
 	/// </summary>
 	public class Grid<T> : IGrid<T> where T : class
 	{
-		readonly T[,] cells;
+		private T[,] cells;
 
 		public int Width { get { return cells.GetLength(0); } }
 		public int Height { get { return cells.GetLength(1); } }
@@ -60,6 +60,7 @@ namespace UnityDoodats
 		public Grid(int width, int height)
 		{
 			cells = new T[width, height];
+			// Unity crashes after leaving the constructor
 		}
 
 
