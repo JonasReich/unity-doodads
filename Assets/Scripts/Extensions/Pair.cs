@@ -6,28 +6,62 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
+	/// <summary>
+	/// 2-dimensional integer vector
+	/// </summary>
+	public class Vec2i : IntPair
+	{
+		public int x, y;
+		public Vec2i(int x, int y) : base(x, y) { }
+		public static readonly Vec2i invalid = new Vec2i(-1, -1);
+	}
+
 	// Base types
 
 	[System.Serializable]
-	public class IntPair : Pair<int> { }
+	public class IntPair : Pair<int>
+	{
+		public IntPair() : base() { }
+		public IntPair(int first, int second) : base(first, second) { }
+	}
 
 	[System.Serializable]
-	public class FloatPair : Pair<float> { }
+	public class FloatPair : Pair<float>
+	{
+		public FloatPair() : base() { }
+		public FloatPair(float first, float second) : base(first, second) { }
+	}
 
 	[System.Serializable]
-	public class StringPair : Pair<string> { }
+	public class StringPair : Pair<string>
+	{
+		public StringPair() : base() { }
+		public StringPair(string first, string second) : base(first, second) { }
+	}
 
 
 	// Unity types
 
 	[System.Serializable]
-	public class GameObjectPair : Pair<GameObject> { }
+	public class GameObjectPair : Pair<GameObject>
+	{
+		public GameObjectPair() : base() { }
+		public GameObjectPair(GameObject first, GameObject second) : base(first, second) { }
+	}
 
 	[System.Serializable]
-	public class TransformPair : Pair<Transform> { }
+	public class TransformPair : Pair<Transform>
+	{
+		public TransformPair() : base() { }
+		public TransformPair(Transform first, Transform second) : base(first, second) { }
+	}
 
 	[System.Serializable]
-	public class Vector3Pair : Pair<Vector3> { }
+	public class Vector3Pair : Pair<Vector3>
+	{
+		public Vector3Pair() : base() { }
+		public Vector3Pair(Vector3 first, Vector3 second) : base(first, second) { }
+	}
 
 
 	/// <summary>
