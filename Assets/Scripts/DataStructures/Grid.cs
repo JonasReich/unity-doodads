@@ -10,33 +10,147 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
-	public interface IGrid<T> : IEnumerable<T> where T : class
+	public class Grid<TileType> : MonoBehaviour where TileType : Component
 	{
-		int Width { get; }
-		int Height { get; }
-		int ItemCount { get; }
+		public TileType prefab;
 
-		T this[int x, int y] { get; set; }
-		T this[Vec2i pos] { get; set; }
+		public int columnCount;
+		public int rowCount;
 
-		void Remove(T item);
+		public TileType[,] tileGrid;
+		protected int tileCount;
 
-		Vec2i GetPosition(T item);
+		protected class Coordinates
+		{
+			public int x, y;
 
-		void Swap(T A, T B);
-		void Swap(Vec2i A, Vec2i B);
+			public Coordinates(int _x, int _y)
+			{
+				x = _x;
+				y = _y;
+			}
+		}
 
-		T[] AdjacentItems(T item);
-		Vec2i[] AdjacentTiles(Vec2i pos);
+		public virtual void Awake()
+		{
+			tileGrid = new TileType[columnCount, rowCount];
+			tileCount = 0;
+		}
 
-		bool IsValid(Vec2i pos);
-		void Clear();
+		public virtual void Start()
+		{
+			CreateTiles();
+		}
+
+
+		//SETUP GRID
+
+		protected void CreateTiles()
+		{
+			for (int x = 0; x < rowCount; x++)
+			{
+				for (int y = 0; y < columnCount; y++)
+				{
+					TileType tNew = Instantiate<TileType>(prefab, new Vector3(0.5f + y - columnCount / 2, 0.5f + x - rowCount / 2), transform.rotation);
+
+					tNew.name = x.ToString() + " " + y.ToString();
+					tileGrid[y, x] = tNew;
+					tNew.transform.parent = this.transform;
+					tileCount++;
+				}
+			}
+		}
+
+
+		//GRID MANIPULATION
+
+		protected Coordinates getGridPosition(TileType originTile)
+		{
+			for (int x = 0; x < rowCount; x++)
+			{
+				for (int y = 0; y < columnCount; y++)
+				{
+					if (originTile == tileGrid[y, x])
+					{
+						return new Coordinates(y, x);
+					}
+				}
+			}
+			return new Coordinates(0, 0);
+		}
+
+		protected TileType[] AdjacentTiles(TileType originTile)
+		{
+			TileType[] tileset = new TileType[9];
+
+			Coordinates pos = getGridPosition(originTile);
+			int tileCount = 0;
+
+			for (int x = -1; x <= +1; x++)
+			{
+				for (int y = -1; y <= +1; y++)
+				{
+					int checkX = pos.x + x;
+					int checkY = pos.y + y;
+
+					//clamp to grid bounds
+					checkX = Math.Min(Math.Max(checkX, 0), columnCount - 1);
+					checkY = Math.Min(Math.Max(checkY, 0), rowCount - 1);
+
+					tileset[tileCount] = tileGrid[checkX, checkY];
+
+					tileCount++;
+				}
+			}
+
+			return cleanArray(tileset);
+		}
+
+		protected void SwapGridTiles(TileType origin, TileType target)
+		{
+			Coordinates oPos = getGridPosition(origin);
+			Coordinates tPos = getGridPosition(target);
+
+			SwapReferences(ref tileGrid[oPos.x, oPos.y], ref tileGrid[tPos.x, tPos.y]);
+		}
+
+
+		//ADDITIONAL METHODS
+
+		private TileType[] cleanArray(TileType[] inputArray)
+		{
+			ArrayList outList = new ArrayList();
+
+			for (int i = 0; i < inputArray.Length; i++)
+			{
+				if (!outList.Contains(inputArray[i]))
+				{
+					outList.Add(inputArray[i]);
+				}
+			}
+
+			TileType[] outArray = new TileType[outList.Count];
+
+			for (int i = 0; i < outList.Count; i++)
+			{
+				outArray[i] = (TileType)outList[i];
+			}
+			return outArray;
+		}
+
+		private void SwapReferences<T>(ref T swap1, ref T swap2)
+		{
+			T swapVar = swap1;
+			swap1 = swap2;
+			swap2 = swapVar;
+		}
 	}
 
+	/*
 	/// <summary>
 	///
 	/// </summary>
-	public class Grid<T> : IGrid<T> where T : class
+	public class Grid<T> : IGrid<T> where T : Component
 	{
 		private T[,] cells;
 
@@ -57,7 +171,7 @@ namespace UnityDoodats
 		}
 
 
-		public Grid(int width, int height)
+		public void Init(int width, int height)
 		{
 			cells = new T[width, height];
 			// Unity crashes after leaving the constructor
@@ -145,4 +259,5 @@ namespace UnityDoodats
 			throw new NotImplementedException();
 		}
 	}
+	*/
 }
