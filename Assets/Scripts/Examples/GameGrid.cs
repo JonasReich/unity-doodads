@@ -21,19 +21,7 @@ namespace UnityDoodats
 		public void Awake()
 		{
 			grid = new Grid<SpriteRenderer>(8,8,prefab,transform);
-			//grid.CreateTiles(transform);
-			//chessboard.Init(8, 8);
-			// Unity crashes after leaving the constructor
-			/*
-			for (int x = 0; x < columnCount; x++)
-			{
-				for (int y = 0; y < rowCount; y++)
-				{
-					tileGrid[x,y] = Instantiate(transform).gameObject.AddComponent<SpriteRenderer>();
-					tileGrid[x, y].transform.localPosition = new Vector2(x, y);
-				}
-			}
-			*/
+
 			int i = 0;
 			for (int x = 0; x < grid.Width; x++)
 			{
