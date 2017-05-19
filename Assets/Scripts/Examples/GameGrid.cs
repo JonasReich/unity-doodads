@@ -12,14 +12,16 @@ namespace UnityDoodats
 	/// <summary>
 	///
 	/// </summary>
-	public class GameGrid : Grid<SpriteRenderer>
+	public class GameGrid : MonoBehaviour
 	{
+		public SpriteRenderer prefab;
 		public Sprite whiteSprite, blackSprite;
+		Grid<SpriteRenderer> grid;
 
-		override public void Awake()
+		public void Awake()
 		{
-			base.Awake();
-			CreateTiles();
+			grid = new Grid<SpriteRenderer>(8,8,prefab,transform);
+			//grid.CreateTiles(transform);
 			//chessboard.Init(8, 8);
 			// Unity crashes after leaving the constructor
 			/*
@@ -33,13 +35,13 @@ namespace UnityDoodats
 			}
 			*/
 			int i = 0;
-			for (int x = 0; x < columnCount; x++)
+			for (int x = 0; x < grid.Width; x++)
 			{
-				for (int y = 0; y < rowCount; y++)
+				for (int y = 0; y < grid.Height; y++)
 				{
 					i++;
-					tileGrid[x, y].sprite = (i % 2 == 0) ? whiteSprite : blackSprite;
-					tileGrid[x, y].color = (i % 2 == 0) ? Color.white : Color.black;
+					grid.cells[x, y].sprite = (i % 2 == 0) ? whiteSprite : blackSprite;
+					grid.cells[x, y].color = (i % 2 == 0) ? Color.white : Color.black;
 				}
 				i++;
 			}

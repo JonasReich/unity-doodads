@@ -10,149 +10,18 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
-	public class Grid<TileType> : MonoBehaviour where TileType : Component
-	{
-		public TileType prefab;
-
-		public int columnCount;
-		public int rowCount;
-
-		public TileType[,] tileGrid;
-		protected int tileCount;
-
-		protected class Coordinates
-		{
-			public int x, y;
-
-			public Coordinates(int _x, int _y)
-			{
-				x = _x;
-				y = _y;
-			}
-		}
-
-		public virtual void Awake()
-		{
-			tileGrid = new TileType[columnCount, rowCount];
-			tileCount = 0;
-		}
-
-		public virtual void Start()
-		{
-			CreateTiles();
-		}
-
-
-		//SETUP GRID
-
-		protected void CreateTiles()
-		{
-			for (int x = 0; x < rowCount; x++)
-			{
-				for (int y = 0; y < columnCount; y++)
-				{
-					TileType tNew = Instantiate<TileType>(prefab, new Vector3(0.5f + y - columnCount / 2, 0.5f + x - rowCount / 2), transform.rotation);
-
-					tNew.name = x.ToString() + " " + y.ToString();
-					tileGrid[y, x] = tNew;
-					tNew.transform.parent = this.transform;
-					tileCount++;
-				}
-			}
-		}
-
-
-		//GRID MANIPULATION
-
-		protected Coordinates getGridPosition(TileType originTile)
-		{
-			for (int x = 0; x < rowCount; x++)
-			{
-				for (int y = 0; y < columnCount; y++)
-				{
-					if (originTile == tileGrid[y, x])
-					{
-						return new Coordinates(y, x);
-					}
-				}
-			}
-			return new Coordinates(0, 0);
-		}
-
-		protected TileType[] AdjacentTiles(TileType originTile)
-		{
-			TileType[] tileset = new TileType[9];
-
-			Coordinates pos = getGridPosition(originTile);
-			int tileCount = 0;
-
-			for (int x = -1; x <= +1; x++)
-			{
-				for (int y = -1; y <= +1; y++)
-				{
-					int checkX = pos.x + x;
-					int checkY = pos.y + y;
-
-					//clamp to grid bounds
-					checkX = Math.Min(Math.Max(checkX, 0), columnCount - 1);
-					checkY = Math.Min(Math.Max(checkY, 0), rowCount - 1);
-
-					tileset[tileCount] = tileGrid[checkX, checkY];
-
-					tileCount++;
-				}
-			}
-
-			return cleanArray(tileset);
-		}
-
-		protected void SwapGridTiles(TileType origin, TileType target)
-		{
-			Coordinates oPos = getGridPosition(origin);
-			Coordinates tPos = getGridPosition(target);
-
-			SwapReferences(ref tileGrid[oPos.x, oPos.y], ref tileGrid[tPos.x, tPos.y]);
-		}
-
-
-		//ADDITIONAL METHODS
-
-		private TileType[] cleanArray(TileType[] inputArray)
-		{
-			ArrayList outList = new ArrayList();
-
-			for (int i = 0; i < inputArray.Length; i++)
-			{
-				if (!outList.Contains(inputArray[i]))
-				{
-					outList.Add(inputArray[i]);
-				}
-			}
-
-			TileType[] outArray = new TileType[outList.Count];
-
-			for (int i = 0; i < outList.Count; i++)
-			{
-				outArray[i] = (TileType)outList[i];
-			}
-			return outArray;
-		}
-
-		private void SwapReferences<T>(ref T swap1, ref T swap2)
-		{
-			T swapVar = swap1;
-			swap1 = swap2;
-			swap2 = swapVar;
-		}
-	}
-
-	/*
-	/// <summary>
-	///
-	/// </summary>
 	public class Grid<T> : IGrid<T> where T : Component
 	{
-		private T[,] cells;
+		//--------------------------------------
+		// Fields
+		//--------------------------------------
+
+		public T[,] cells;
+		public T prefab;
+
+		//--------------------------------------
+		// Properties
+		//--------------------------------------
 
 		public int Width { get { return cells.GetLength(0); } }
 		public int Height { get { return cells.GetLength(1); } }
@@ -162,7 +31,7 @@ namespace UnityDoodats
 			{
 				int i = 0;
 
-				foreach (var item in this)
+				foreach (var item in cells)
 					if (item != null)
 						i++;
 
@@ -170,45 +39,57 @@ namespace UnityDoodats
 			}
 		}
 
-
-		public void Init(int width, int height)
-		{
-			cells = new T[width, height];
-			// Unity crashes after leaving the constructor
-		}
-
+		//--------------------------------------
+		// Overload [] operators
+		//--------------------------------------
 
 		public T this[int x, int y] { get { return cells[x, y]; } set { cells[x, y] = value; } }
-		public T this[Vec2i pos] { get { return this[pos.x, pos.y]; } set { this[pos.x, pos.y] = value; } }
+		public T this[Vec2i pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
 
-		public void Remove(T t)
+		//--------------------------------------
+		// Setup
+		//--------------------------------------
+
+		public Grid(int columnCount, int rowCount, T prefab, Transform root)
 		{
-			var pos = GetPosition(t);
+			this.prefab = prefab;
 
-			if (IsValid(pos))
-				this[pos] = null;
+			cells = new T[columnCount, rowCount];
+			CreateTiles(root);
 		}
+
+		public void CreateTiles(Transform root)
+		{
+			for (int x = 0; x < Height; x++)
+			{
+				for (int y = 0; y < Width; y++)
+				{
+					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(0.5f + y - Width / 2, 0.5f + x - Height / 2), root.rotation);
+
+					tNew.name = x.ToString() + " " + y.ToString();
+					cells[y, x] = tNew;
+					tNew.transform.parent = root;
+				}
+			}
+		}
+
+		//--------------------------------------
+		// Get Information
+		//--------------------------------------
 
 		public Vec2i GetPosition(T item)
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
-					if (cells[x, y].Equals(item))
+					if (cells[x, y] == item)
 						return new Vec2i(x, y);
 
 			return Vec2i.invalid;
 		}
 
-		public void Swap(T A, T B)
+		public bool IsValid(Vec2i pos)
 		{
-			Swap(GetPosition(A), GetPosition(B));
-		}
-
-		public void Swap(Vec2i A, Vec2i B)
-		{
-			T temp = this[A];
-			this[A] = this[B];
-			this[B] = this[A];
+			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
 		}
 
 		public T[] AdjacentItems(T item)
@@ -237,9 +118,28 @@ namespace UnityDoodats
 			return adjacentTiles.ToArray();
 		}
 
-		public bool IsValid(Vec2i pos)
+		//--------------------------------------
+		// Modify
+		//--------------------------------------
+
+		public void Remove(T t)
 		{
-			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
+			var pos = GetPosition(t);
+
+			if (IsValid(pos))
+				this[pos] = null;
+		}
+
+		public void Swap(T A, T B)
+		{
+			Swap(GetPosition(A), GetPosition(B));
+		}
+
+		public void Swap(Vec2i A, Vec2i B)
+		{
+			T temp = this[A];
+			this[A] = this[B];
+			this[B] = this[A];
 		}
 
 		public void Clear()
@@ -249,15 +149,20 @@ namespace UnityDoodats
 					this[x, y] = null;
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return cells.GetEnumerator();
-		}
+		//--------------------------------------
+		// Enumerate
+		//--------------------------------------
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			for (int x = 0; x < Width; x++)
+				for (int y = 0; y < Height; y++)
+					yield return cells[x, y];
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
-	*/
 }
