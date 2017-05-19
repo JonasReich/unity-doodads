@@ -2,7 +2,6 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -10,35 +9,18 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
-	public interface IGrid<T> : IEnumerable<T> where T : class
+	public class Grid<T> : IGrid<T> where T : Component
 	{
-		int Width { get; }
-		int Height { get; }
-		int ItemCount { get; }
+		//--------------------------------------
+		// Fields
+		//--------------------------------------
 
-		T this[int x, int y] { get; set; }
-		T this[Vec2i pos] { get; set; }
+		T[,] cells;
+		T prefab;
 
-		void Remove(T item);
-
-		Vec2i GetPosition(T item);
-
-		void Swap(T A, T B);
-		void Swap(Vec2i A, Vec2i B);
-
-		T[] AdjacentItems(T item);
-		Vec2i[] AdjacentTiles(Vec2i pos);
-
-		bool IsValid(Vec2i pos);
-		void Clear();
-	}
-
-	/// <summary>
-	///
-	/// </summary>
-	public class Grid<T> : IGrid<T> where T : class
-	{
-		private T[,] cells;
+		//--------------------------------------
+		// Properties
+		//--------------------------------------
 
 		public int Width { get { return cells.GetLength(0); } }
 		public int Height { get { return cells.GetLength(1); } }
@@ -48,7 +30,7 @@ namespace UnityDoodats
 			{
 				int i = 0;
 
-				foreach (var item in this)
+				foreach (var item in cells)
 					if (item != null)
 						i++;
 
@@ -56,45 +38,57 @@ namespace UnityDoodats
 			}
 		}
 
-
-		public Grid(int width, int height)
-		{
-			cells = new T[width, height];
-			// Unity crashes after leaving the constructor
-		}
-
+		//--------------------------------------
+		// Overload [] operators
+		//--------------------------------------
 
 		public T this[int x, int y] { get { return cells[x, y]; } set { cells[x, y] = value; } }
-		public T this[Vec2i pos] { get { return this[pos.x, pos.y]; } set { this[pos.x, pos.y] = value; } }
+		public T this[Vec2i pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
 
-		public void Remove(T t)
+		//--------------------------------------
+		// Setup
+		//--------------------------------------
+
+		public Grid(int columnCount, int rowCount, T prefab, Transform root)
 		{
-			var pos = GetPosition(t);
+			this.prefab = prefab;
 
-			if (IsValid(pos))
-				this[pos] = null;
+			cells = new T[columnCount, rowCount];
+			CreateTiles(root);
 		}
+
+		public void CreateTiles(Transform root)
+		{
+			for (int x = 0; x < Height; x++)
+			{
+				for (int y = 0; y < Width; y++)
+				{
+					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(0.5f + y - Width / 2, 0.5f + x - Height / 2), root.rotation);
+
+					tNew.name = x.ToString() + " " + y.ToString();
+					cells[y, x] = tNew;
+					tNew.transform.parent = root;
+				}
+			}
+		}
+
+		//--------------------------------------
+		// Get Information
+		//--------------------------------------
 
 		public Vec2i GetPosition(T item)
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
-					if (cells[x, y].Equals(item))
+					if (cells[x, y] == item)
 						return new Vec2i(x, y);
 
 			return Vec2i.invalid;
 		}
 
-		public void Swap(T A, T B)
+		public bool IsValid(Vec2i pos)
 		{
-			Swap(GetPosition(A), GetPosition(B));
-		}
-
-		public void Swap(Vec2i A, Vec2i B)
-		{
-			T temp = this[A];
-			this[A] = this[B];
-			this[B] = this[A];
+			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
 		}
 
 		public T[] AdjacentItems(T item)
@@ -123,9 +117,28 @@ namespace UnityDoodats
 			return adjacentTiles.ToArray();
 		}
 
-		public bool IsValid(Vec2i pos)
+		//--------------------------------------
+		// Modify
+		//--------------------------------------
+
+		public void Remove(T t)
 		{
-			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
+			var pos = GetPosition(t);
+
+			if (IsValid(pos))
+				this[pos] = null;
+		}
+
+		public void Swap(T A, T B)
+		{
+			Swap(GetPosition(A), GetPosition(B));
+		}
+
+		public void Swap(Vec2i A, Vec2i B)
+		{
+			T temp = this[A];
+			this[A] = this[B];
+			this[B] = this[A];
 		}
 
 		public void Clear()
@@ -135,14 +148,20 @@ namespace UnityDoodats
 					this[x, y] = null;
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return cells.GetEnumerator();
-		}
+		//--------------------------------------
+		// Enumerate
+		//--------------------------------------
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			for (int x = 0; x < Width; x++)
+				for (int y = 0; y < Height; y++)
+					yield return cells[x, y];
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
