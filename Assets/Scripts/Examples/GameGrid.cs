@@ -40,8 +40,8 @@ namespace UnityDoodats
 				for (int y = 0; y < grid.Height; y++)
 				{
 					i++;
-					grid.cells[x, y].sprite = (i % 2 == 0) ? whiteSprite : blackSprite;
-					grid.cells[x, y].color = (i % 2 == 0) ? Color.white : Color.black;
+					grid[x, y].sprite = (i % 2 == 0) ? whiteSprite : blackSprite;
+					grid[x, y].color = (i % 2 == 0) ? Color.white : Color.black;
 				}
 				i++;
 			}
