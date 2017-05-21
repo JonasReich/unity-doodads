@@ -26,7 +26,7 @@ namespace UnityDoodats.Editor
 
 		private Vector2 scrollPos = Vector2.zero;
 
-		[MenuItem("Window/Animation Hierarchy Editor")]
+		[MenuItem("Tools/Animation Hierarchy Editor")]
 		static void ShowWindow()
 		{
 			GetWindow<AnimationHierarchyEditor>();
