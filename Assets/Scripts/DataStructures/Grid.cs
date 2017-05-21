@@ -43,7 +43,7 @@ namespace UnityDoodats
 		//--------------------------------------
 
 		public T this[int x, int y] { get { return cells[x, y]; } set { cells[x, y] = value; } }
-		public T this[Vec2i pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
+		public T this[XY pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
 
 		//--------------------------------------
 		// Setup
@@ -76,17 +76,17 @@ namespace UnityDoodats
 		// Get Information
 		//--------------------------------------
 
-		public Vec2i GetPosition(T item)
+		public XY GetPosition(T item)
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
 					if (cells[x, y] == item)
-						return new Vec2i(x, y);
+						return new XY(x, y);
 
-			return Vec2i.invalid;
+			return XY.invalid;
 		}
 
-		public bool IsValid(Vec2i pos)
+		public bool IsValid(XY pos)
 		{
 			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
 		}
@@ -102,14 +102,14 @@ namespace UnityDoodats
 			return adjacentTiles.ToArray();
 		}
 
-		public Vec2i[] AdjacentTiles(Vec2i pos)
+		public XY[] AdjacentTiles(XY pos)
 		{
-			List<Vec2i> adjacentTiles = new List<Vec2i>();
+			List<XY> adjacentTiles = new List<XY>();
 
 			for (int x = -1; x <= +1; x++)
 				for (int y = -1; y <= +1; y++)
 				{
-					Vec2i n = new Vec2i(pos.x + x, pos.y + y);
+					XY n = new XY(pos.x + x, pos.y + y);
 					if (IsValid(n))
 						adjacentTiles.Add(n);
 				}
@@ -134,7 +134,7 @@ namespace UnityDoodats
 			Swap(GetPosition(A), GetPosition(B));
 		}
 
-		public void Swap(Vec2i A, Vec2i B)
+		public void Swap(XY A, XY B)
 		{
 			T temp = this[A];
 			this[A] = this[B];

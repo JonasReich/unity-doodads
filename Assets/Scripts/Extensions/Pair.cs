@@ -9,11 +9,12 @@ namespace UnityDoodats
 	/// <summary>
 	/// 2-dimensional integer vector
 	/// </summary>
-	public class Vec2i : IntPair
+	public class XY : IntPair
 	{
-		public int x, y;
-		public Vec2i(int x, int y) : base(x, y) { }
-		public static readonly Vec2i invalid = new Vec2i(-1, -1);
+		public int x { get { return first; }set { first = value; } }
+		public int y { get { return second; } set { second = value; } }
+		public XY(int x, int y) : base(x, y) { }
+		public static readonly XY invalid = new XY(-1, -1);
 	}
 
 	// Base types
