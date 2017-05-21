@@ -16,11 +16,11 @@ namespace UnityDoodats
 	{
 		public SpriteRenderer prefab;
 		public Sprite whiteSprite, blackSprite;
-		Grid<SpriteRenderer> grid;
+		ComponentGrid<SpriteRenderer> grid;
 
 		public void Awake()
 		{
-			grid = new Grid<SpriteRenderer>(8,8,prefab,transform);
+			grid = new ComponentGrid<SpriteRenderer>(8,8,prefab,transform);
 
 			int i = 0;
 			for (int x = 0; x < grid.Width; x++)

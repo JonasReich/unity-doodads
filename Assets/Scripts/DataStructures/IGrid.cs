@@ -8,10 +8,7 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IGrid<T> : IEnumerable<T> where T : Component
+	public interface IGrid<T> : IEnumerable<T>
 	{
 		int Width { get; }
 		int Height { get; }
@@ -23,6 +20,7 @@ namespace UnityDoodats
 		void Remove(T item);
 
 		XY GetPosition(T item);
+		bool Contains(T item);
 
 		void Swap(T A, T B);
 		void Swap(XY A, XY B);
@@ -30,7 +28,15 @@ namespace UnityDoodats
 		T[] AdjacentItems(T item);
 		XY[] AdjacentTiles(XY pos);
 
+		T[] OrthogonalItems(T item);
+		XY[] OrthogonalTiles(XY pos);
+
 		bool IsValid(XY pos);
 		void Clear();
+	}
+
+	public interface IGridWithCosts<T> : IGrid<T>
+	{
+		int GetCosts(XY A, XY B);
 	}
 }

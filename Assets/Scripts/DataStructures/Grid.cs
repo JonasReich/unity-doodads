@@ -9,14 +9,32 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
-	public class Grid<T> : IGrid<T> where T : Component
+	/// <summary>
+	///
+	/// </summary>
+	public class Grid<T> : IGrid<T>
 	{
-		//--------------------------------------
-		// Fields
-		//--------------------------------------
+		protected T[,] cells;
 
-		T[,] cells;
-		T prefab;
+
+		public Grid(int x, int y)
+		{
+			cells = new T[x, y];
+		}
+
+		public void Initialize()
+		{
+			for (int x = 0; x < Height; x++)
+				for (int y = 0; y < Width; y++)
+					cells[x, y] = default(T);
+		}
+
+		public void Initialize(T defaultValue)
+		{
+			for (int x = 0; x < Height; x++)
+				for (int y = 0; y < Width; y++)
+					cells[x, y] = defaultValue;
+		}
 
 		//--------------------------------------
 		// Properties
@@ -46,33 +64,6 @@ namespace UnityDoodats
 		public T this[XY pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
 
 		//--------------------------------------
-		// Setup
-		//--------------------------------------
-
-		public Grid(int columnCount, int rowCount, T prefab, Transform root)
-		{
-			this.prefab = prefab;
-
-			cells = new T[columnCount, rowCount];
-			CreateTiles(root);
-		}
-
-		public void CreateTiles(Transform root)
-		{
-			for (int x = 0; x < Height; x++)
-			{
-				for (int y = 0; y < Width; y++)
-				{
-					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(0.5f + y - Width / 2, 0.5f + x - Height / 2), root.rotation);
-
-					tNew.name = x.ToString() + " " + y.ToString();
-					cells[y, x] = tNew;
-					tNew.transform.parent = root;
-				}
-			}
-		}
-
-		//--------------------------------------
 		// Get Information
 		//--------------------------------------
 
@@ -80,15 +71,24 @@ namespace UnityDoodats
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
-					if (cells[x, y] == item)
+					if (cells[x, y].Equals(item))
 						return new XY(x, y);
 
 			return XY.invalid;
 		}
 
+		public bool Contains(T item)
+		{
+			foreach (var _item in this)
+				if (item.Equals(_item))
+					return true;
+
+			return false;
+		}
+
 		public bool IsValid(XY pos)
 		{
-			return pos.x > 0 && pos.x < Width && pos.y > 0 && pos.y < Width;
+			return pos.x >= 0 && pos.x < Width && pos.y >= 0 && pos.y < Width;
 		}
 
 		public T[] AdjacentItems(T item)
@@ -117,6 +117,36 @@ namespace UnityDoodats
 			return adjacentTiles.ToArray();
 		}
 
+		public T[] OrthogonalItems(T item)
+		{
+			List<T> orthogonalItems = new List<T>();
+
+			foreach (var pos in OrthogonalTiles(GetPosition(item)))
+				if (this[pos] != null)
+					orthogonalItems.Add(this[pos]);
+
+			return orthogonalItems.ToArray();
+		}
+
+		public XY[] OrthogonalTiles(XY pos)
+		{
+			List<XY> orthogonalTiles = new List<XY>();
+
+			var n = new XY(-1, 0);
+			if (IsValid(n)) orthogonalTiles.Add(n);
+
+			n = new XY(+1, 0);
+			if (IsValid(n)) orthogonalTiles.Add(n);
+
+			n = new XY(0, -1);
+			if (IsValid(n)) orthogonalTiles.Add(n);
+
+			n = new XY(0, +1);
+			if (IsValid(n)) orthogonalTiles.Add(n);
+
+			return orthogonalTiles.ToArray();
+		}
+
 		//--------------------------------------
 		// Modify
 		//--------------------------------------
@@ -126,7 +156,7 @@ namespace UnityDoodats
 			var pos = GetPosition(t);
 
 			if (IsValid(pos))
-				this[pos] = null;
+				this[pos] = default(T);
 		}
 
 		public void Swap(T A, T B)
@@ -145,7 +175,7 @@ namespace UnityDoodats
 		{
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
-					this[x, y] = null;
+					this[x, y] = default(T);
 		}
 
 		//--------------------------------------

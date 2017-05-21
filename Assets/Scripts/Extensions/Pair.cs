@@ -9,6 +9,7 @@ namespace UnityDoodats
 	/// <summary>
 	/// 2-dimensional integer vector
 	/// </summary>
+	[System.Serializable]
 	public class XY : IntPair
 	{
 		public int x { get { return first; }set { first = value; } }
