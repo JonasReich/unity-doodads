@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -21,6 +21,7 @@ namespace UnityDoodats.Editor
 		{
 			style = new GUIStyle();
 			style.normal.textColor = Color.yellow;
+			initialized = true;
 		}
 
 
