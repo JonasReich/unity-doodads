@@ -15,7 +15,7 @@ namespace UnityDoodats
 	public class PathfindingTestGrid : MonoBehaviour
 	{
 		public PathfindingTestTile prefab;
-		ComponentGridWithCosts<PathfindingTestTile> grid;
+		public Grid grid;
 
 		[SerializeField]
 		int width, height;
@@ -26,7 +26,7 @@ namespace UnityDoodats
 
 		void Awake ()
 		{
-			grid = new ComponentGridWithCosts<PathfindingTestTile>(width, height, prefab, transform);
+			grid = new Grid(width, height, prefab, transform);
 			layerMask = layerMask.Add(prefab.gameObject.layer);
 		}
 
@@ -50,6 +50,15 @@ namespace UnityDoodats
 			grid[target].meshRenderer.material.color = Color.blue;
 			foreach (var item in path)
 				item.meshRenderer.material.color = Color.red;
+		}
+
+		[System.Serializable]
+
+		public class Grid : ComponentGridWithCosts<PathfindingTestTile>
+		{
+			public Grid (int columnCount, int rowCount, PathfindingTestTile prefab, Transform root) : base(columnCount, rowCount, prefab, root)
+			{
+			}
 		}
 	}
 }

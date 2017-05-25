@@ -13,19 +13,16 @@ namespace UnityDoodats
 	/// <summary>
 	///
 	/// </summary>
+	[Serializable]
 	public class ComponentGridWithCosts<T> : ComponentGrid<T>, IGridWithCosts<T> where T : Component, IGridTileWithEntryCosts
 	{
-		Grid<int> entryCosts; // Easiest implementation atm
-
 		public ComponentGridWithCosts(int columnCount, int rowCount, T prefab, Transform root) : base(columnCount, rowCount, prefab, root)
 		{
-			entryCosts = new Grid<int>(columnCount, rowCount);
-			entryCosts.Initialize(1);
 		}
 
 		public int GetCosts(XY A, XY B)
 		{
-			return cells[B.x, B.y].EntryCosts;
+			return this[B.x, B.y].EntryCosts;
 		}
 	}
 

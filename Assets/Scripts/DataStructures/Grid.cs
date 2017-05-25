@@ -12,14 +12,17 @@ namespace UnityDoodats
 	/// <summary>
 	///
 	/// </summary>
+	[System.Serializable]
+
 	public class Grid<T> : IGrid<T>
 	{
-		protected T[,] cells;
+		[SerializeField]
+		protected T[] cells;
 
 
 		public Grid (int x, int y)
 		{
-			cells = new T[x, y];
+			cells = new T[x * y];
 			width = x;
 			height = y;
 		}
@@ -28,14 +31,14 @@ namespace UnityDoodats
 		{
 			for (int x = 0; x < height; x++)
 				for (int y = 0; y < width; y++)
-					cells[x, y] = default(T);
+					this[x, y] = default(T);
 		}
 
 		public void Initialize (T defaultValue)
 		{
 			for (int x = 0; x < height; x++)
 				for (int y = 0; y < width; y++)
-					cells[x, y] = defaultValue;
+					this[x, y] = defaultValue;
 		}
 
 		//--------------------------------------
@@ -65,8 +68,8 @@ namespace UnityDoodats
 		// Overload [] operators
 		//--------------------------------------
 
-		public T this[int x, int y] { get { return cells[x, y]; } set { cells[x, y] = value; } }
-		public T this[XY pos] { get { return cells[pos.x, pos.y]; } set { cells[pos.x, pos.y] = value; } }
+		public T this[int x, int y] { get { return cells[y * width + x]; } set { cells[y * width + x] = value; } }
+		public T this[XY pos] { get { return this[pos.x, pos.y]; } set { this[pos.x, pos.y] = value; } }
 
 		//--------------------------------------
 		// Get Information
@@ -76,7 +79,7 @@ namespace UnityDoodats
 		{
 			for (int x = 0; x < width; x++)
 				for (int y = 0; y < height; y++)
-					if (cells[x, y].Equals(item))
+					if (this[x, y].Equals(item))
 						return new XY(x, y);
 
 			return XY.invalid;
@@ -196,7 +199,7 @@ namespace UnityDoodats
 		{
 			for (int x = 0; x < width; x++)
 				for (int y = 0; y < height; y++)
-					yield return cells[x, y];
+					yield return this[x, y];
 		}
 
 		IEnumerator IEnumerable.GetEnumerator ()

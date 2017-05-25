@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace UnityDoodats
 {
+	[System.Serializable]
 	public class ComponentGrid<T> : Grid<T> where T : Component
 	{
 		[SerializeField]
@@ -22,8 +23,6 @@ namespace UnityDoodats
 			: base(columnCount, rowCount)
 		{
 			this.prefab = prefab;
-
-			cells = new T[columnCount, rowCount];
 			CreateTiles(root);
 		}
 
@@ -36,7 +35,7 @@ namespace UnityDoodats
 					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(x,y), root.rotation);
 
 					tNew.name = y.ToString() + " " + x.ToString();
-					cells[x, y] = tNew;
+					this[x, y] = tNew;
 					tNew.transform.parent = root;
 				}
 			}
