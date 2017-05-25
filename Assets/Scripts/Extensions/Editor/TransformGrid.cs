@@ -24,15 +24,25 @@ namespace UnityDoodats.Editor
 		static bool autoSnap = false;
 		static bool customGridScale = true;
 		static string autoSnapText = "Auto snap (on)";
-		static bool initialized;
 
 		static Transform targetTransform = null;
 
 		[MenuItem("Tools/Show Snap Grid")]
 		private static void ShowGrid ()
 		{
-			if (!initialized)
-				Initialize();
+			red = new Color(219f / 255f, 62f / 255f, 29f / 255f, 237f / 255f);
+			green = new Color(154f / 255f, 243f / 255f, 72f / 255f, 237f / 255f);
+			blue = new Color(58f / 255f, 122f / 255f, 248f / 255f, 237f / 255f);
+
+			SceneView.onSceneGUIDelegate -= OnScene;
+			SceneView.onSceneGUIDelegate += OnScene;
+			SceneView.RepaintAll();
+		}
+
+		private static void HideGrid ()
+		{
+			SceneView.onSceneGUIDelegate -= OnScene;
+			SceneView.RepaintAll();
 		}
 
 		private static void OnScene (SceneView sceneview)
@@ -84,8 +94,16 @@ namespace UnityDoodats.Editor
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Grid settings");
+			GUILayout.Label("Snap Grid Settings");
 			GUILayout.FlexibleSpace();
+
+			GUI.color = Color.red;
+			if (GUILayout.Button("X"))
+			{
+				HideGrid();
+			}
+			GUI.color = Color.white;
+
 			GUILayout.EndHorizontal();
 
 			//-------------------------------------
@@ -137,18 +155,6 @@ namespace UnityDoodats.Editor
 			EditorGUILayout.EndVertical();
 			GUILayout.EndArea();
 			Handles.EndGUI();
-		}
-
-		private static void Initialize ()
-		{
-			red = new Color(219f / 255f, 62f / 255f, 29f / 255f, 237f / 255f);
-			green = new Color(154f / 255f, 243f / 255f, 72f / 255f, 237f / 255f);
-			blue = new Color(58f / 255f, 122f / 255f, 248f / 255f, 237f / 255f);
-
-			SceneView.onSceneGUIDelegate -= OnScene;
-			SceneView.onSceneGUIDelegate += OnScene;
-
-			initialized = true;
 		}
 
 		private static void UpdateGrid (int count)
@@ -279,8 +285,8 @@ namespace UnityDoodats.Editor
 			}
 		}
 
-		
-		static float snapX_, snapY_, snapZ_; 
+
+		static float snapX_, snapY_, snapZ_;
 
 		// returns true if something has changed
 		static bool UpdateSnapValues ()
