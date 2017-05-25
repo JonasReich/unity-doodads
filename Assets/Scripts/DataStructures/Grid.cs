@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -20,6 +20,8 @@ namespace UnityDoodats
 		public Grid(int x, int y)
 		{
 			cells = new T[x, y];
+			Width = x;
+			Height = y;
 		}
 
 		public void Initialize()
@@ -40,8 +42,8 @@ namespace UnityDoodats
 		// Properties
 		//--------------------------------------
 
-		public int Width { get { return cells.GetLength(0); } }
-		public int Height { get { return cells.GetLength(1); } }
+		public int Width { get; private set; }
+		public int Height { get; private set; }
 		public int ItemCount
 		{
 			get
@@ -88,7 +90,7 @@ namespace UnityDoodats
 
 		public bool IsValid(XY pos)
 		{
-			return pos.x >= 0 && pos.x < Width && pos.y >= 0 && pos.y < Width;
+			return pos.x >= 0 && pos.x < Width && pos.y >= 0 && pos.y < Height;
 		}
 
 		public T[] AdjacentItems(T item)
@@ -132,16 +134,16 @@ namespace UnityDoodats
 		{
 			List<XY> orthogonalTiles = new List<XY>();
 
-			var n = new XY(-1, 0);
+			var n = new XY(pos.x-1, pos.y);
 			if (IsValid(n)) orthogonalTiles.Add(n);
 
-			n = new XY(+1, 0);
+			n = new XY(pos.x+1, pos.y);
 			if (IsValid(n)) orthogonalTiles.Add(n);
 
-			n = new XY(0, -1);
+			n = new XY(pos.x, pos.y-1);
 			if (IsValid(n)) orthogonalTiles.Add(n);
 
-			n = new XY(0, +1);
+			n = new XY(pos.x, pos.y+1);
 			if (IsValid(n)) orthogonalTiles.Add(n);
 
 			return orthogonalTiles.ToArray();
