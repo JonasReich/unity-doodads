@@ -16,7 +16,7 @@ namespace UnityDoodats
 
 	public class Grid<T> : IGrid<T>
 	{
-		[SerializeField]
+		[SerializeField, HideInInspector]
 		protected T[] cells;
 
 
@@ -45,6 +45,7 @@ namespace UnityDoodats
 		// Properties
 		//--------------------------------------
 
+		[SerializeField, HideInInspector]
 		int width, height;
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
@@ -68,6 +69,7 @@ namespace UnityDoodats
 		// Overload [] operators
 		//--------------------------------------
 
+		// TODO: Why does this throw exceptions for non-square grids?
 		public T this[int x, int y] { get { return cells[y * width + x]; } set { cells[y * width + x] = value; } }
 		public T this[XY pos] { get { return this[pos.x, pos.y]; } set { this[pos.x, pos.y] = value; } }
 

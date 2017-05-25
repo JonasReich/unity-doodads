@@ -12,15 +12,15 @@ namespace UnityDoodats
 	[System.Serializable]
 	public class ComponentGrid<T> : Grid<T> where T : Component
 	{
-		[SerializeField]
+		[SerializeField, HideInInspector]
 		protected T prefab;
 
 		//--------------------------------------
 		// Setup
 		//--------------------------------------
 
-		public ComponentGrid(int columnCount, int rowCount, T prefab, Transform root)
-			: base(columnCount, rowCount)
+		public ComponentGrid(int width, int height, T prefab, Transform root)
+			: base(width, height)
 		{
 			this.prefab = prefab;
 			CreateTiles(root);

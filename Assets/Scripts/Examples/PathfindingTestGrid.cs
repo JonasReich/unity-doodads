@@ -2,6 +2,7 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -15,7 +16,9 @@ namespace UnityDoodats
 	public class PathfindingTestGrid : MonoBehaviour
 	{
 		public PathfindingTestTile prefab;
-		public Grid grid;
+		
+		[SerializeField, HideInInspector]
+		Grid grid;
 
 		[SerializeField]
 		int width, height;
@@ -26,7 +29,6 @@ namespace UnityDoodats
 
 		void Awake ()
 		{
-			grid = new Grid(width, height, prefab, transform);
 			layerMask = layerMask.Add(prefab.gameObject.layer);
 		}
 
@@ -52,11 +54,19 @@ namespace UnityDoodats
 				item.meshRenderer.material.color = Color.red;
 		}
 
+		public void Refresh ()
+		{
+			while (transform.childCount != 0)
+				DestroyImmediate(transform.GetChild(0).gameObject);
+
+			grid = new Grid(width, height, prefab, transform);
+		}
+
 		[System.Serializable]
 
 		public class Grid : ComponentGridWithCosts<PathfindingTestTile>
 		{
-			public Grid (int columnCount, int rowCount, PathfindingTestTile prefab, Transform root) : base(columnCount, rowCount, prefab, root)
+			public Grid (int width, int height, PathfindingTestTile prefab, Transform root) : base(width, height, prefab, root)
 			{
 			}
 		}
