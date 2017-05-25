@@ -13,7 +13,7 @@ namespace UnityDoodats
 	/// <summary>
 	///
 	/// </summary>
-	public class ComponentGridWithCosts<T> : ComponentGrid<T>, IGridWithCosts<T> where T : Component
+	public class ComponentGridWithCosts<T> : ComponentGrid<T>, IGridWithCosts<T> where T : Component, IGridTileWithEntryCosts
 	{
 		Grid<int> entryCosts; // Easiest implementation atm
 
@@ -25,7 +25,12 @@ namespace UnityDoodats
 
 		public int GetCosts(XY A, XY B)
 		{
-			return entryCosts[B.x, B.y];
+			return cells[B.x, B.y].EntryCosts;
 		}
+	}
+
+	public interface IGridTileWithEntryCosts
+	{
+		int EntryCosts { get; }
 	}
 }

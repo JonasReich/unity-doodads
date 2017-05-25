@@ -14,8 +14,8 @@ namespace UnityDoodats
 	/// </summary>
 	public class PathfindingTestGrid : MonoBehaviour
 	{
-		public MeshRenderer prefab;
-		ComponentGridWithCosts<MeshRenderer> grid;
+		public PathfindingTestTile prefab;
+		ComponentGridWithCosts<PathfindingTestTile> grid;
 
 		[SerializeField]
 		int width, height;
@@ -25,7 +25,7 @@ namespace UnityDoodats
 
 		void Awake ()
 		{
-			grid = new ComponentGridWithCosts<MeshRenderer>(width, height, prefab, transform);
+			grid = new ComponentGridWithCosts<PathfindingTestTile>(width, height, prefab, transform);
 		}
 
 		public void Update ()
@@ -38,13 +38,13 @@ namespace UnityDoodats
 				return;
 
 			foreach (var item in grid)
-				item.material.color = Color.white;
+				item.meshRenderer.material.color = Color.white;
 
 			var path = PathfindingAlgorithms.Dijkstra(origin, target, grid);
-			grid[origin].material.color = Color.black;
-			grid[target].material.color = Color.blue;
+			grid[origin].meshRenderer.material.color = Color.black;
+			grid[target].meshRenderer.material.color = Color.blue;
 			foreach (var item in path)
-				item.material.color = Color.red;
+				item.meshRenderer.material.color = Color.red;
 		}
 	}
 }
