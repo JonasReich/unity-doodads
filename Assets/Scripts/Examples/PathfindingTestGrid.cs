@@ -22,16 +22,21 @@ namespace UnityDoodats
 		[SerializeField]
 		XY origin, target;
 
+		LayerMask layerMask;
 
 		void Awake ()
 		{
 			grid = new ComponentGridWithCosts<PathfindingTestTile>(width, height, prefab, transform);
+			layerMask = layerMask.Add(prefab.gameObject.layer);
 		}
 
 		public void Update ()
 		{
-			var mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			target = new XY((int)mouseWorldPoint.x, (int)mouseWorldPoint.y);
+			RaycastHit hit;
+			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 300f, layerMask) == false)
+				return;
+
+			target = new XY((int)hit.point.x, (int)hit.point.y);
 
 
 			if (grid.IsValid(target) == false)
