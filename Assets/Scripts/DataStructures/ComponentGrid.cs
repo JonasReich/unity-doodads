@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -29,14 +29,14 @@ namespace UnityDoodats
 
 		public void CreateTiles(Transform root)
 		{
-			for (int x = 0; x < Height; x++)
+			for (int y = 0; y < Height; y++)
 			{
-				for (int y = 0; y < Width; y++)
+				for (int x = 0; x < Width; x++)
 				{
-					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(0.5f + y - Width / 2, 0.5f + x - Height / 2), root.rotation);
+					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(x,y), root.rotation);
 
-					tNew.name = x.ToString() + " " + y.ToString();
-					cells[y, x] = tNew;
+					tNew.name = y.ToString() + " " + x.ToString();
+					cells[x, y] = tNew;
 					tNew.transform.parent = root;
 				}
 			}

@@ -15,11 +15,12 @@ namespace UnityDoodats
 	/// </summary>
 	public class ComponentGridWithCosts<T> : ComponentGrid<T>, IGridWithCosts<T> where T : Component
 	{
-		int[,] entryCosts; // Easiest implementation atm
+		Grid<int> entryCosts; // Easiest implementation atm
 
 		public ComponentGridWithCosts(int columnCount, int rowCount, T prefab, Transform root) : base(columnCount, rowCount, prefab, root)
 		{
-			entryCosts = new int[columnCount, rowCount];
+			entryCosts = new Grid<int>(columnCount, rowCount);
+			entryCosts.Initialize(1);
 		}
 
 		public int GetCosts(XY A, XY B)

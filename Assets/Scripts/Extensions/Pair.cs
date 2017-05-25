@@ -2,6 +2,7 @@
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
+using System;
 using UnityEngine;
 
 namespace UnityDoodats
@@ -10,12 +11,17 @@ namespace UnityDoodats
 	/// 2-dimensional integer vector
 	/// </summary>
 	[System.Serializable]
-	public class XY : IntPair
+	public class XY
 	{
-		public int x { get { return first; } set { first = value; } }
-		public int y { get { return second; } set { second = value; } }
-		public XY (int x, int y) : base(x, y) { }
+		public int x;
+		public int y;
+		public XY (int x, int y) { this.x = x; this.y = y; }
 		public static readonly XY invalid = new XY(-1, -1);
+		
+		public static implicit operator string (XY pos)
+		{
+			return "(" + pos.x + "|" + pos.y + ")";
+		}
 	}
 
 	// Base types
@@ -122,11 +128,6 @@ namespace UnityDoodats
 				hashcode += second.GetHashCode();
 
 			return hashcode;
-		}
-
-		public static implicit operator string (Pair<T, U> p)
-		{
-			return "(" + p.first.ToString() + "|" + p.second.ToString() + ")";
 		}
 	}
 }

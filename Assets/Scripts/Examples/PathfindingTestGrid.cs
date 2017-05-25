@@ -17,10 +17,11 @@ namespace UnityDoodats
 		public MeshRenderer prefab;
 		ComponentGridWithCosts<MeshRenderer> grid;
 
-		public int width, height;
+		[SerializeField]
+		int width, height;
+		[SerializeField]
+		XY origin, target;
 
-		public XY origin;
-		public XY target;
 
 		void Awake ()
 		{
@@ -30,34 +31,20 @@ namespace UnityDoodats
 		public void Update ()
 		{
 			var mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			target = new XY((int)mouseWorldPoint.x, (int)mouseWorldPoint.y);
+
+
+			if (grid.IsValid(target) == false)
+				return;
 
 			foreach (var item in grid)
 				item.material.color = Color.white;
 
-			var path = PathfindingAlgorithms.BreathFirstSearch(origin, new XY((int)mouseWorldPoint.x, (int)mouseWorldPoint.y), grid);
+			var path = PathfindingAlgorithms.Dijkstra(origin, target, grid);
 			grid[origin].material.color = Color.black;
 			grid[target].material.color = Color.blue;
 			foreach (var item in path)
 				item.material.color = Color.red;
-
-			if (Input.GetKeyDown(KeyCode.Space))
-				StartCoroutine(SearchForTarget());
-		}
-
-		IEnumerator SearchForTarget()
-		{
-			foreach (var item in grid)
-				item.material.color = Color.white;
-
-			var path = PathfindingAlgorithms.BreathFirstSearch(origin, target, grid);
-			grid[origin].material.color = Color.black;
-			grid[target].material.color = Color.blue;
-			foreach (var item in path)
-			{
-				item.material.color = Color.red;
-				yield return new WaitForSeconds(0.5f);
-			}
-
 		}
 	}
 }
