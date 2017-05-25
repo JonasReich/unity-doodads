@@ -1,7 +1,8 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
+using System;
 using UnityEngine;
 
 namespace UnityDoodats
@@ -9,12 +10,18 @@ namespace UnityDoodats
 	/// <summary>
 	/// 2-dimensional integer vector
 	/// </summary>
-	public class XY : IntPair
+	[System.Serializable]
+	public class XY
 	{
-		public int x { get { return first; }set { first = value; } }
-		public int y { get { return second; } set { second = value; } }
-		public XY(int x, int y) : base(x, y) { }
+		public int x;
+		public int y;
+		public XY (int x, int y) { this.x = x; this.y = y; }
 		public static readonly XY invalid = new XY(-1, -1);
+		
+		public static implicit operator string (XY pos)
+		{
+			return "(" + pos.x + "|" + pos.y + ")";
+		}
 	}
 
 	// Base types
@@ -22,22 +29,22 @@ namespace UnityDoodats
 	[System.Serializable]
 	public class IntPair : Pair<int>
 	{
-		public IntPair() : base() { }
-		public IntPair(int first, int second) : base(first, second) { }
+		public IntPair () : base() { }
+		public IntPair (int first, int second) : base(first, second) { }
 	}
 
 	[System.Serializable]
 	public class FloatPair : Pair<float>
 	{
-		public FloatPair() : base() { }
-		public FloatPair(float first, float second) : base(first, second) { }
+		public FloatPair () : base() { }
+		public FloatPair (float first, float second) : base(first, second) { }
 	}
 
 	[System.Serializable]
 	public class StringPair : Pair<string>
 	{
-		public StringPair() : base() { }
-		public StringPair(string first, string second) : base(first, second) { }
+		public StringPair () : base() { }
+		public StringPair (string first, string second) : base(first, second) { }
 	}
 
 
@@ -46,22 +53,22 @@ namespace UnityDoodats
 	[System.Serializable]
 	public class GameObjectPair : Pair<GameObject>
 	{
-		public GameObjectPair() : base() { }
-		public GameObjectPair(GameObject first, GameObject second) : base(first, second) { }
+		public GameObjectPair () : base() { }
+		public GameObjectPair (GameObject first, GameObject second) : base(first, second) { }
 	}
 
 	[System.Serializable]
 	public class TransformPair : Pair<Transform>
 	{
-		public TransformPair() : base() { }
-		public TransformPair(Transform first, Transform second) : base(first, second) { }
+		public TransformPair () : base() { }
+		public TransformPair (Transform first, Transform second) : base(first, second) { }
 	}
 
 	[System.Serializable]
 	public class Vector3Pair : Pair<Vector3>
 	{
-		public Vector3Pair() : base() { }
-		public Vector3Pair(Vector3 first, Vector3 second) : base(first, second) { }
+		public Vector3Pair () : base() { }
+		public Vector3Pair (Vector3 first, Vector3 second) : base(first, second) { }
 	}
 
 
