@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -21,6 +21,7 @@ namespace UnityDoodats.Editor
 		{
 			style = new GUIStyle();
 			style.normal.textColor = Color.yellow;
+			initialized = true;
 		}
 
 
@@ -50,7 +51,11 @@ namespace UnityDoodats.Editor
 		private static void OnScene(SceneView sceneview)
 		{
 			Handles.BeginGUI();
+			GUILayout.BeginArea(new Rect(20, 80, 150, 120));
+			GUILayout.BeginHorizontal();
 			GUILayout.Label("Time scale: x" + Time.timeScale.ToString(), style);
+			GUILayout.EndHorizontal();
+			GUILayout.EndArea();
 			Handles.EndGUI();
 		}
 	}
