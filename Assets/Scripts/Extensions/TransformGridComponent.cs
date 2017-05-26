@@ -45,9 +45,9 @@ namespace UnityDoodats.Editor
 
 		void OnDrawGizmos ()
 		{
-			
+
 			if (instance != this)
-				DestroyImmediate(transform.parent.gameObject);
+				gameObject.hideFlags = HideFlags.None;
 			
 
 			//-------------------------------------

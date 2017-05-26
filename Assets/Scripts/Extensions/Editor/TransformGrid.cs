@@ -22,6 +22,8 @@ namespace UnityDoodats.Editor
 		// is handled in TransformGridComponent
 		//-------------------------------------
 
+		static string currentScene;
+
 		[MenuItem("Tools/Show Snap Grid")]
 		private static void ShowGrid ()
 		{
@@ -33,23 +35,39 @@ namespace UnityDoodats.Editor
 			SceneView.onSceneGUIDelegate += OnScene;
 			SceneView.RepaintAll();
 
+			EditorApplication.hierarchyWindowChanged -= HierarchyWindowChanged;
+			EditorApplication.hierarchyWindowChanged += HierarchyWindowChanged;
+			currentScene = EditorApplication.currentScene;
 
 			if (TransformGridComponent.instance != null)
 				GameObject.DestroyImmediate(TransformGridComponent.instance.transform.parent.gameObject);
 
 			var go_parent = new GameObject("Transform Grid Parent");
-			go_parent.hideFlags = HideFlags.HideInHierarchy | HideFlags.DontSave;
+			go_parent.hideFlags = HideFlags.HideInHierarchy | HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
 
 			var go = new GameObject("Transform Grid");
 			go.transform.SetParent(go_parent.transform);
 			
+
 			TransformGridComponent.instance = go.AddComponent<TransformGridComponent>();
+		}
+
+		private static void HierarchyWindowChanged ()
+		{
+			if(currentScene != EditorApplication.currentScene)
+			{
+				currentScene = EditorApplication.currentScene;
+				ShowGrid();
+			}
 		}
 
 		private static void HideGrid ()
 		{
 			SceneView.onSceneGUIDelegate -= OnScene;
 			SceneView.RepaintAll();
+
+			EditorApplication.hierarchyWindowChanged -= HierarchyWindowChanged;
+			currentScene = "";
 
 
 			if (TransformGridComponent.instance != null)
