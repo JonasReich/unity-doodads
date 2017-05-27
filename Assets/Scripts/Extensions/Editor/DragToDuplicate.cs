@@ -10,7 +10,7 @@ using UnityEngine;
 namespace UnityDoodats.Editor
 {
 	/// <summary>
-	/// 
+	/// Adds D + drag duplicate functionality to Editor. Only works on single objects
 	/// </summary>
 	[CustomEditor(typeof(GameObject))]
 	public class DragToDuplicate : UnityEditor.Editor
@@ -81,37 +81,6 @@ namespace UnityDoodats.Editor
 
 				gameObject_copy = null;
 			}
-
-			Handles.BeginGUI();
-			GUILayout.BeginArea(new Rect(10, 10, 150, 120));
-			var rect = EditorGUILayout.BeginVertical();
-			GUI.Box(rect, GUIContent.none);
-
-			GUI.color = Color.white;
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("shiftPressed: " + shiftPressed);
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("mouseDown: " + mouseDown);
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("mouseDrag: " + mouseDrag);
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			GUILayout.EndHorizontal();
-			EditorGUILayout.EndVertical();
-			GUILayout.EndArea();
-			Handles.EndGUI();
 		}
 	}
 }
