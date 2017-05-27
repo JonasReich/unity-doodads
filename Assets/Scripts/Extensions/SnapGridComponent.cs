@@ -27,12 +27,18 @@ namespace UnityDoodats.Editor
 		public static Vector3[]y_plane;
 		public static Vector3[]z_plane;
 
+		public static Vector3[]x_plane_10;
+		public static Vector3[]y_plane_10;
+		public static Vector3[]z_plane_10;
+
+
+		public static bool show = true;
 		public static bool showX = true, showY = true, showZ = true;
 		public static bool autoSnap = true;
-		
-				
+
+
 		Material material;
-		
+
 
 		void LoadMaterial ()
 		{
@@ -43,13 +49,17 @@ namespace UnityDoodats.Editor
 		{
 			if (instance != this)
 				gameObject.hideFlags = HideFlags.None;
-			
+
 			//-------------------------------------
 			// Info
 			//-------------------------------------
 
+			// call only if something has changed
 			if (UpdateSnapValues())
-				UpdateGrid(100); // call only if something has changed
+			{
+				UpdateGrid(ref x_plane, ref y_plane, ref z_plane, 100, scaleX, scaleY, scaleZ);
+				UpdateGrid(ref x_plane_10, ref y_plane_10, ref z_plane_10, 100 / 10, scaleX * 10, scaleY * 10, scaleZ * 10);
+			}
 
 			//-------------------------------------
 			// Auto Snap
@@ -58,17 +68,27 @@ namespace UnityDoodats.Editor
 			if (autoSnap)
 				SnapToGrid();
 
+			if (show)
+			{
+				if (showX)
+				{
+					DrawLines(x_plane, red);
+					DrawLines(x_plane_10, red);
+				}
+
+				if (showY)
+				{
+					DrawLines(y_plane, green);
+					DrawLines(y_plane_10, green);
+				}
+
+				if (showZ)
+				{
+					DrawLines(z_plane, blue);
+					DrawLines(z_plane_10, blue);
+				}
+			}
 			
-			if (showX)
-				DrawLines(x_plane, red);
-
-			if (showY)
-				DrawLines(y_plane, green);
-
-			if (showZ)
-				DrawLines(z_plane, blue);
-
-
 			/*
 			GL.Begin(GL.LINES);
 			lineMat.SetPass(0);
@@ -100,8 +120,12 @@ namespace UnityDoodats.Editor
 
 
 
-		private static void UpdateGrid (int count)
+		private static void UpdateGrid (
+			ref Vector3[] x_plane, ref Vector3[] y_plane, ref Vector3[] z_plane,
+			int count, float scaleX, float scaleY, float scaleZ)
 		{
+			//scaleX = scaleY = scaleZ *= 10f;
+
 			// force count to be even
 			if ((count % 2) != 0)
 				count++;
