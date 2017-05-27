@@ -24,7 +24,7 @@ namespace UnityDoodats.Editor
 
 		static string currentScene;
 
-		[MenuItem("Tools/Show Snap Grid")]
+		[MenuItem("Tools/Show Snap Grid &G")]
 		private static void ShowGrid ()
 		{
 			TransformGridComponent.red = new Color(219f / 255f, 62f / 255f, 29f / 255f, 237f / 255f);
