@@ -6,19 +6,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityDoodats.Editor;
 
 namespace UnityDoodats.Editor
 {
 #if UNITY_EDITOR
-	/// <summary>
-	/// 
-	/// </summary>
 	[ExecuteInEditMode]
 	[System.Obsolete("Don't use this outside of Editor scripts")]
-	public class TransformGridComponent : MonoBehaviour
+	public class SnapGridComponent : MonoBehaviour
 	{
-		public static TransformGridComponent instance;
+		public static SnapGridComponent instance;
 
 		//-------------------------------------
 		// Settings
@@ -45,11 +41,9 @@ namespace UnityDoodats.Editor
 
 		void OnDrawGizmos ()
 		{
-
 			if (instance != this)
 				gameObject.hideFlags = HideFlags.None;
 			
-
 			//-------------------------------------
 			// Info
 			//-------------------------------------
