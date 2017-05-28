@@ -4,6 +4,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,7 +39,83 @@ namespace UnityDoodats.Editor
 
 
 		Material material;
+
+		private void OnEnable ()
+		{
+			EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
+		}
+
+		private void OnDisable ()
+		{
+			EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
+		}
+
+
+		void OnPlaymodeStateChanged ()
+		{
+			if (EditorApplication.isPlayingOrWillChangePlaymode)
+			{
+				if (EditorApplication.isPlaying)
+				{
+					// 2. reset, therefore load
+					Load();
+				}
+				else
+				{
+					// 1. not reset
+					Save();
+				}
+			}
+			else
+			{
+				if (EditorApplication.isPlaying)
+				{
+					// 3. not reset
+				}
+				else
+				{
+					// 4. not reset
+				}
+			}
+		}
 		
+		public void Save ()
+		{
+			var sw = File.CreateText("gridprefs");
+			sw.WriteLine(show);
+			sw.WriteLine(showX);
+			sw.WriteLine(showY);
+			sw.WriteLine(showZ);
+			sw.WriteLine(autoSnap);
+			sw.Close();
+		}
+
+		void Load ()
+		{
+			if (File.Exists("gridprefs"))
+			{
+				var sr = File.OpenText("gridprefs");
+				/*
+				var line = sr.ReadLine();
+				while (line != null)
+				{
+					Debug.Log(line); // prints each line of the file
+					line = sr.ReadLine();
+				}
+				*/
+				bool.TryParse(sr.ReadLine(), out show);
+				bool.TryParse(sr.ReadLine(), out showX);
+				bool.TryParse(sr.ReadLine(), out showY);
+				bool.TryParse(sr.ReadLine(), out showZ);
+				bool.TryParse(sr.ReadLine(), out autoSnap);
+				sr.Close();
+			}
+			else
+			{
+				Debug.Log("Could not Open the file: " + "testfile.txt" + " for reading.");
+				return;
+			}
+		}
 
 		void LoadMaterial ()
 		{
@@ -56,7 +133,7 @@ namespace UnityDoodats.Editor
 
 			// call only if something has changed
 			if (x_plane == null || y_plane == null || z_plane == null ||
-				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null || 
+				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null ||
 				UpdateSnapValues())
 			{
 				UpdateGrid(ref x_plane, ref y_plane, ref z_plane, 100, scaleX, scaleY, scaleZ);

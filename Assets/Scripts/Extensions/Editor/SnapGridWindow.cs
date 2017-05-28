@@ -38,7 +38,7 @@ namespace UnityDoodats.Editor
 			HideGrid();
 		}
 
-		private static void ShowGrid ()
+		private void ShowGrid ()
 		{
 			red = SnapGridComponent.red = new Color(219f / 255f, 62f / 255f, 29f / 255f, 237f / 255f);
 			green = SnapGridComponent.green = new Color(154f / 255f, 243f / 255f, 72f / 255f, 237f / 255f);
@@ -58,15 +58,19 @@ namespace UnityDoodats.Editor
 
 			SnapGridComponent.instance = go.AddComponent<SnapGridComponent>();
 
+			EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
+
 			SceneView.RepaintAll();
 		}
 
-		private static void HideGrid ()
+		private void HideGrid ()
 		{
 			if (SnapGridComponent.instance != null)
 				GameObject.DestroyImmediate(SnapGridComponent.instance.transform.parent.gameObject);
 
 			SnapGridComponent.instance = null;
+
+			EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 
 			SceneView.RepaintAll();
 		}
@@ -128,6 +132,12 @@ namespace UnityDoodats.Editor
 			GUILayout.BeginHorizontal();
 			GUILayout.EndHorizontal();
 			EditorGUILayout.EndVertical();
+		}
+
+		void OnPlaymodeStateChanged ()
+		{
+			if (EditorApplication.isPlayingOrWillChangePlaymode && EditorApplication.isPlaying)
+					Repaint();
 		}
 #pragma warning restore 0618
 	}
