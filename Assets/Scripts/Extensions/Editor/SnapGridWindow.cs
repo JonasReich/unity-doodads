@@ -49,10 +49,10 @@ namespace UnityDoodats.Editor
 			if (SnapGridComponent.instance != null)
 				GameObject.DestroyImmediate(SnapGridComponent.instance.transform.parent.gameObject);
 
-			var go_parent = new GameObject("Transform Grid Parent");
+			var go_parent = new GameObject("Snap Grid Parent Container");
 			go_parent.hideFlags = HideFlags.HideInHierarchy | HideFlags.DontSave;
 
-			var go = new GameObject("Transform Grid");
+			var go = new GameObject("Snap Grid");
 			go.transform.SetParent(go_parent.transform);
 			go.hideFlags = HideFlags.DontSave;
 
@@ -76,11 +76,11 @@ namespace UnityDoodats.Editor
 			GUI.color = Color.white;
 			GUILayout.BeginVertical();
 
-			GUI.backgroundColor = SnapGridComponent.show ? Color.white : Color.grey;
-			var showText = SnapGridComponent.show ? "o.o" : "-.-";
+			GUI.backgroundColor = SnapGridComponent.instance.show ? Color.white : Color.grey;
+			var showText = SnapGridComponent.instance.show ? "o.o" : "-.-";
 			if (GUILayout.Button(showText))
 			{
-				SnapGridComponent.show = !SnapGridComponent.show;
+				SnapGridComponent.instance.show = !SnapGridComponent.instance.show;
 				SceneView.RepaintAll();
 			}
 
@@ -88,22 +88,22 @@ namespace UnityDoodats.Editor
 			// XYZ Buttons
 			//-------------------------------------
 
-			GUI.backgroundColor = SnapGridComponent.showX ? red : Color.grey;
+			GUI.backgroundColor = SnapGridComponent.instance.showX ? red : Color.grey;
 			if (GUILayout.Button("X"))
 			{
-				SnapGridComponent.showX = !SnapGridComponent.showX;
+				SnapGridComponent.instance.showX = !SnapGridComponent.instance.showX;
 				SceneView.RepaintAll();
 			}
-			GUI.backgroundColor = SnapGridComponent.showY ? green : Color.grey;
+			GUI.backgroundColor = SnapGridComponent.instance.showY ? green : Color.grey;
 			if (GUILayout.Button("Y"))
 			{
-				SnapGridComponent.showY = !SnapGridComponent.showY;
+				SnapGridComponent.instance.showY = !SnapGridComponent.instance.showY;
 				SceneView.RepaintAll();
 			}
-			GUI.backgroundColor = SnapGridComponent.showZ ? blue : Color.grey;
+			GUI.backgroundColor = SnapGridComponent.instance.showZ ? blue : Color.grey;
 			if (GUILayout.Button("Z"))
 			{
-				SnapGridComponent.showZ = !SnapGridComponent.showZ;
+				SnapGridComponent.instance.showZ = !SnapGridComponent.instance.showZ;
 				SceneView.RepaintAll();
 			}
 
@@ -112,14 +112,14 @@ namespace UnityDoodats.Editor
 			//-------------------------------------
 
 			GUI.backgroundColor = Color.white;
-			if (GUILayout.Button("Snap selected"))
-				SnapGridComponent.SnapToGrid();
+			if (GUILayout.Button("Snap Selected"))
+				SnapGridComponent.instance.SnapToGrid();
 
 			//-------------------------------------
 			// Auto Snap
 			//-------------------------------------
 
-			SnapGridComponent.autoSnap = GUILayout.Toggle(SnapGridComponent.autoSnap, "Auto Snap");
+			SnapGridComponent.instance.autoSnap = GUILayout.Toggle(SnapGridComponent.instance.autoSnap, "Auto Snap");
 
 			//-------------------------------------
 			// End of window...

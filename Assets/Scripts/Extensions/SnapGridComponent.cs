@@ -20,25 +20,25 @@ namespace UnityDoodats.Editor
 		// Settings
 		//-------------------------------------
 
-		public static float scaleX, scaleY, scaleZ;
+		public float scaleX, scaleY, scaleZ;
 		public static Color red, green, blue;
 
-		public static Vector3[]x_plane;
-		public static Vector3[]y_plane;
-		public static Vector3[]z_plane;
+		public Vector3[]x_plane;
+		public Vector3[]y_plane;
+		public Vector3[]z_plane;
 
-		public static Vector3[]x_plane_10;
-		public static Vector3[]y_plane_10;
-		public static Vector3[]z_plane_10;
+		public Vector3[]x_plane_10;
+		public Vector3[]y_plane_10;
+		public Vector3[]z_plane_10;
 
 
-		public static bool show = true;
-		public static bool showX = true, showY = true, showZ = true;
-		public static bool autoSnap = true;
+		public bool show = true;
+		public bool showX = true, showY = true, showZ = true;
+		public bool autoSnap = false;
 
 
 		Material material;
-
+		
 
 		void LoadMaterial ()
 		{
@@ -55,7 +55,9 @@ namespace UnityDoodats.Editor
 			//-------------------------------------
 
 			// call only if something has changed
-			if (UpdateSnapValues())
+			if (x_plane == null || y_plane == null || z_plane == null ||
+				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null || 
+				UpdateSnapValues())
 			{
 				UpdateGrid(ref x_plane, ref y_plane, ref z_plane, 100, scaleX, scaleY, scaleZ);
 				UpdateGrid(ref x_plane_10, ref y_plane_10, ref z_plane_10, 100 / 10, scaleX * 10, scaleY * 10, scaleZ * 10);
@@ -88,7 +90,7 @@ namespace UnityDoodats.Editor
 					DrawLines(z_plane_10, blue);
 				}
 			}
-			
+
 			/*
 			GL.Begin(GL.LINES);
 			lineMat.SetPass(0);
@@ -120,7 +122,7 @@ namespace UnityDoodats.Editor
 
 
 
-		private static void UpdateGrid (
+		private void UpdateGrid (
 			ref Vector3[] x_plane, ref Vector3[] y_plane, ref Vector3[] z_plane,
 			int count, float scaleX, float scaleY, float scaleZ)
 		{
@@ -236,7 +238,7 @@ namespace UnityDoodats.Editor
 		}
 
 		// Source: http://wiki.unity3d.com/index.php/SnapToGrid
-		public static void SnapToGrid ()
+		public void SnapToGrid ()
 		{
 			scaleX *= 2;
 			scaleY *= 2;
@@ -256,7 +258,7 @@ namespace UnityDoodats.Editor
 		static float snapX_, snapY_, snapZ_;
 
 		// returns true if something has changed
-		static bool UpdateSnapValues ()
+		bool UpdateSnapValues ()
 		{
 			scaleX = EditorPrefs.GetFloat("MoveSnapX") / 2;
 			scaleY = EditorPrefs.GetFloat("MoveSnapY") / 2;
