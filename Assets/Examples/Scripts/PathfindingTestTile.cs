@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Doodads
+namespace Doodads.Examples
 {
 	/// <summary>
 	/// 
