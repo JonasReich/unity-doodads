@@ -2,6 +2,7 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -10,9 +11,9 @@ using UnityEngine;
 namespace Doodads
 {
 	/// <summary>
-	///
+	/// A collection of generic pathfinding algorithms
 	/// </summary>
-	abstract public class PathfindingAlgorithms
+	static public class PathfindingAlgorithms
 	{
 		public enum Algorithm
 		{
@@ -21,61 +22,69 @@ namespace Doodads
 			Astar
 		}
 
-		public static List<T> Search<T> (XY origin, XY target, IGridWithCosts<T> grid, Algorithm algorithm)
+		public delegate bool ExitCondition<T>(IGrid<T> grid, XY tile);
+		
+
+		public static List<T> Search<T> (Algorithm algorithm, IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition)
 		{
 			switch (algorithm)
 			{
 				case Algorithm.BreathFirstSearch:
-					return BreathFirstSearch(origin, target, grid);
+					return BreathFirstSearch(grid, origin, exitCondition);
 				case Algorithm.Dijkstra:
-					return Dijkstra(origin, target, grid);
+					return Dijkstra(grid, origin, exitCondition);
 				case Algorithm.Astar:
-					return Astar(origin, target, grid);
+					return Astar(grid, origin, exitCondition);
 			}
 			return null;
 		}
 		
-		public static List<T> BreathFirstSearch<T> (XY origin, XY target, IGrid<T> grid)
+		public static List<T> BreathFirstSearch<T> (IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition)
 		{
 			Validate(grid, origin);
-			Validate(grid, target);
 
-			var predecessors = BFS_Flood(grid, origin, target);
+			XY target;
+			var predecessors = BFS_Flood(grid, origin, exitCondition, out target);
 			return Backtrack(grid, predecessors, target);
 		}
 
-		public static List<T> Dijkstra<T> (XY origin, XY target, IGridWithCosts<T> grid)
+		public static List<T> Dijkstra<T> (IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition)
 		{
 			Validate(grid, origin);
-			Validate(grid, target);
 
-			var predecessors = Dijkstra_Flood(grid, origin, target);
+			XY target;
+			var predecessors = Dijkstra_Flood(grid, origin, exitCondition, out target);
 			return Backtrack(grid, predecessors, target);
 		}
 
-		public static List<T> Astar<T>(XY origin, XY target, IGridWithCosts<T> grid)
+		public static List<T> Astar<T>(IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition)
 		{
 			Validate(grid, origin);
-			Validate(grid, target);
 
-			var predecessors = Astar_Flood(grid, origin, target);
+			XY target;
+			var predecessors = Astar_Flood(grid, origin, exitCondition, out target);
 			return Backtrack(grid, predecessors, target);
 		}
 
 		// leave target empty to flood entire grid
-		static Grid<XY> BFS_Flood<T> (IGrid<T> grid, XY origin, XY target = null)
+		static Grid<XY> BFS_Flood<T> (IGrid<T> grid, XY origin, ExitCondition<T> exitCondition, out XY target)
 		{
 			var frontier = new Queue<XY>();
 			frontier.Enqueue(origin);
 			var predecessors = new Grid<XY>(grid.Width, grid.Height);
 			predecessors[origin] = origin;
 
+			target = XY.invalid;
+
 			while (frontier.Count > 0)
 			{
 				var current = frontier.Dequeue();
-				
-				if (current == target)
+
+				if (exitCondition(grid, current))
+				{
+					target = current;
 					break;
+				}
 
 				foreach (var next in grid.OrthogonalTiles(current))
 					if (next != null && predecessors[next] == null)
@@ -84,11 +93,12 @@ namespace Doodads
 						predecessors[next] = current;
 					}
 			}
+
 			return predecessors;
 		}
 
 		// leave target empty to flood entire grid
-		static Grid<XY> Dijkstra_Flood<T> (IGridWithCosts<T> grid, XY origin, XY target = null)
+		static Grid<XY> Dijkstra_Flood<T> (IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition, out XY target)
 		{
 			var frontier = new LinkedList<XY>();
 			var predecessors = new Grid<XY>(grid.Width, grid.Height);
@@ -100,13 +110,18 @@ namespace Doodads
 			predecessors[origin] = origin;
 			costs[origin] = 0;
 
+			target = XY.invalid;
+
 			while (frontier.Count > 0)
 			{
-				XY current = frontier.First.Value;
+				var current = frontier.First.Value;
 				frontier.RemoveFirst();
 
-				if (current == target)
+				if (exitCondition(grid, current))
+				{
+					target = current;
 					break;
+				}
 
 				foreach (var next in grid.OrthogonalTiles(current))
 				{
@@ -135,7 +150,7 @@ namespace Doodads
 			return predecessors;
 		}
 
-		static Grid<XY> Astar_Flood<T> (IGridWithCosts<T> grid, XY origin, XY target = null)
+		static Grid<XY> Astar_Flood<T> (IGridWithCosts<T> grid, XY origin, ExitCondition<T> exitCondition, out XY target)
 		{
 			var frontier = new PriorityQueue<XY>();
 			var predecessors = new Grid<XY>(grid.Width, grid.Height);
@@ -147,12 +162,17 @@ namespace Doodads
 			predecessors[origin] = origin;
 			costs[origin] = 0;
 
+			target = XY.invalid;
+
 			while (frontier.Count > 0)
 			{
-				XY current = frontier.Dequeue();
+				var current = frontier.Dequeue();
 
-				if (current == target)
+				if (exitCondition(grid, current))
+				{
+					target = current;
 					break;
+				}
 
 				foreach (var next in grid.OrthogonalTiles(current))
 				{
@@ -164,7 +184,7 @@ namespace Doodads
 					{
 						costs[next] = newCosts;
 
-						var priority = newCosts + Heuristic(grid, target, next);
+						var priority = newCosts + Heuristic(grid, current, next);
 						frontier.Enqueue(next, priority);
 						predecessors[next] = current;
 					}
@@ -191,6 +211,9 @@ namespace Doodads
 
 		static List<T> Backtrack<T> (IGrid<T> grid, Grid<XY> predecessors, XY target)
 		{
+			if (grid.IsValid(target) == false)
+				return null;
+
 			var current = target;
 			var path = new List<T>();
 			while (predecessors[current] != current)

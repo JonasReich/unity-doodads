@@ -16,7 +16,7 @@ namespace Doodads.Examples
 	public class PathfindingTestGrid : MonoBehaviour
 	{
 		public PathfindingTestTile prefab;
-		
+
 		[SerializeField, HideInInspector]
 		Grid grid;
 
@@ -29,6 +29,7 @@ namespace Doodads.Examples
 
 		public PathfindingAlgorithms.Algorithm algorithm;
 
+
 		void Awake ()
 		{
 			layerMask = layerMask.Add(prefab.gameObject.layer);
@@ -37,24 +38,26 @@ namespace Doodads.Examples
 		public void Update ()
 		{
 			RaycastHit hit;
-			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 300f, layerMask) == false)
-				return;
+			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 300f, layerMask))
+				target = new XY((int)hit.point.x, (int)hit.point.y);
+			else
+				target = XY.invalid;
 
-			target = new XY((int)hit.point.x, (int)hit.point.y);
-
-
-			if (grid.IsValid(target) == false)
-				return;
-
+			// Restore colors
 			foreach (var item in grid)
 				item.meshRenderer.material.color = Color.white;
-
-			var path = PathfindingAlgorithms.Search(origin, target, grid, algorithm);
-
 			grid[origin].meshRenderer.material.color = Color.black;
-			grid[target].meshRenderer.material.color = Color.blue;
-			foreach (var item in path)
-				item.meshRenderer.material.color = Color.red;
+
+			// Search
+			var path = PathfindingAlgorithms.Search(algorithm, grid, origin, ExitCondition);
+			
+			if (path != null)
+			{
+				foreach (var item in path)
+					item.meshRenderer.material.color = Color.red;
+
+				grid[target].meshRenderer.material.color = Color.blue;
+			}
 		}
 
 		public void Refresh ()
@@ -64,6 +67,12 @@ namespace Doodads.Examples
 
 			grid = new Grid(width, height, prefab, transform);
 		}
+
+		public bool ExitCondition<T> (IGrid<T> grid, XY tile)
+		{
+			return tile.x == target.x && tile.y == target.y;
+		}
+
 
 		[System.Serializable]
 
