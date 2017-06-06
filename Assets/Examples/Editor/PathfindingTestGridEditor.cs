@@ -19,8 +19,10 @@ namespace Doodads.Examples.Editor
 		{
 			DrawDefaultInspector();
 			PathfindingTestGrid grid = (PathfindingTestGrid)target;
-			
-			if (GUILayout.Button("Refresh"))
+
+			GUIContent c = new GUIContent("  Refresh", EditorGUIUtility.FindTexture("RotateTool"));
+
+			if (GUILayout.Button(c))
 			{
 				grid.Refresh();
 			}
