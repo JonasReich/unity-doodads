@@ -32,34 +32,42 @@ namespace Doodads.Editor
 			switch (Event.current.type)
 			{
 				case EventType.MouseDown:
-					originalPosition = go.transform.position;
-					mouseDown = true;
+					if (Event.current.button == 0)
+					{
+						originalPosition = go.transform.position;
+						mouseDown = true;
+					}
 					break;
 				case EventType.MouseUp:
-					mouseDown = false;
+					if (Event.current.button == 0)
+					{
+						mouseDown = false;
 					mouseDrag = false;
+					}
 					break;
 				case EventType.MouseDrag:
-					mouseDrag = true;
+					if (Event.current.button == 0)
+						mouseDrag = true;
 					break;
 				case EventType.KeyDown:
-					if(Event.current.keyCode == KeyCode.D)
-					shiftPressed = true;
+					if (Event.current.keyCode == KeyCode.D)
+						shiftPressed = true;
 					break;
 				case EventType.KeyUp:
 					if (Event.current.keyCode == KeyCode.D)
 						shiftPressed = false;
 					break;
 				case EventType.DragUpdated:
-
-					mouseDrag = true;
+					if (Event.current.button == 0)
+						mouseDrag = true;
 					break;
 				case EventType.DragPerform:
-
-					mouseDrag = false;
+					if (Event.current.button == 0)
+						mouseDrag = false;
 					break;
 				case EventType.DragExited:
-					mouseDrag = false;
+					if (Event.current.button == 0)
+						mouseDrag = false;
 					break;
 				default:
 					break;
