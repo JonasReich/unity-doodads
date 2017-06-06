@@ -27,6 +27,8 @@ namespace Doodads.Examples
 
 		LayerMask layerMask;
 
+		public PathfindingAlgorithms.Algorithm algorithm;
+
 		void Awake ()
 		{
 			layerMask = layerMask.Add(prefab.gameObject.layer);
@@ -47,7 +49,8 @@ namespace Doodads.Examples
 			foreach (var item in grid)
 				item.meshRenderer.material.color = Color.white;
 
-			var path = PathfindingAlgorithms.Dijkstra(origin, target, grid);
+			var path = PathfindingAlgorithms.Search(origin, target, grid, algorithm);
+
 			grid[origin].meshRenderer.material.color = Color.black;
 			grid[target].meshRenderer.material.color = Color.blue;
 			foreach (var item in path)
