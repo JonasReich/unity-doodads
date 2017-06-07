@@ -15,15 +15,33 @@ namespace Doodads
 	/// </summary>
 	public class VisibilityMesh : MonoBehaviour, IComparer<Vector3>
 	{
-		public List<Collider2D> visionBlockingColliders;
+		/* ---------------------------------------
+		 * References:
+		 * ---------------------------------------
+		 * 1. Amit Patel's "Red Blob Games" blog:
+		 * http://www.redblobgames.com/articles/visibility/
+		 * 
+		 * 2. Nicky Case's "SIGHT & LIGHT":
+		 * http://ncase.me/sight-and-light/
+		 * 
+		 * 3. Catlike Coding's Tutorial on procedural Unity meshes:
+		 * http://catlikecoding.com/unity/tutorials/procedural-grid/
+		 * ---------------------------------------*/
 
-		public Transform targetTransform;
+		static readonly Quaternion smallPositiveRotation = Quaternion.Euler(0, 0, +0.0001f);
+		static readonly Quaternion smallNegativeRotation = Quaternion.Euler(0, 0, -0.0001f);
+
+		public Transform eyeTransform;
+		public List<Collider2D> visionBlockingColliders;
+		public Material material;
+		public Vector3 offset;
+
 
 		List<Vector3> uniqueEndpoints;
+		List<Vector3> vertices;
 		Mesh mesh;
 		MeshFilter meshFilter;
 
-		Vector3[] vertices;
 
 		void Awake ()
 		{
@@ -38,40 +56,21 @@ namespace Doodads
 			MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
 			if (meshRenderer == null)
 				meshRenderer = gameObject.AddComponent<MeshRenderer>();
+			meshRenderer.material = material;
 
-
-
-			this.uniqueEndpoints = GenerateEndpointList(visionBlockingColliders);
-
+			uniqueEndpoints = GenerateEndpointList(visionBlockingColliders);
 
 			GetComponent<MeshFilter>().sharedMesh = mesh = new Mesh();
 			mesh.name = "Visibility Mesh";
 
-
-			
 			GenerateMesh();
-
-
-
-			/*
-			meshRenderer.material = new Material(Shader.Find("Standard"));
-
-
-
-			
-
-			mesh = meshFilter.sharedMesh = new Mesh();
-			mesh.vertices = new Vector3[3];
-			mesh.triangles = new int[3] ;
-			for (int i = 0; i < mesh.triangles.Length; i++)
-			{
-				mesh.triangles[i] = i;
-			}
-
-
-			mesh.uv = new Vector2[] { Vector2.zero, Vector2.one, Vector2.right };
-			*/
 		}
+		
+		void Update ()
+		{
+			GenerateMesh();
+		}
+
 
 		private List<Vector3> GenerateEndpointList (List<Collider2D> visionBlockingColliders)
 		{
@@ -94,67 +93,47 @@ namespace Doodads
 
 		private void GenerateMesh ()
 		{
-			var smallPositiveRotation = Quaternion.Euler(0, 0, +0.0001f);
-			var smallNegativeRotation = Quaternion.Euler(0, 0, -0.0001f);
-
+			var targetPosition = eyeTransform.position + offset;
+			
 			// Sort uniqueEndpoints depending on angle
-			this.uniqueEndpoints.Sort(this);
+			uniqueEndpoints.Sort(this);
 
-			var hitPoints = new List<Vector3>();
+			vertices = new List<Vector3>();
 
 			for (int i = 0; i < uniqueEndpoints.Count; i++)
 			{
-				var direction = uniqueEndpoints[i] - targetTransform.position;
+				var direction = uniqueEndpoints[i] - targetPosition;
 
-				var hit = Physics2D.Raycast(targetTransform.position, smallNegativeRotation * direction);
+				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction);
 				if (hit)
 				{
-					Debug.DrawLine((Vector2)targetTransform.position, hit.point, Color.red);
-					hitPoints.Add(hit.point);
+					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					vertices.Add(hit.point);
 				}
 
-				hit = Physics2D.Raycast(targetTransform.position, direction);
+				hit = Physics2D.Raycast(targetPosition, direction);
 				if (hit)
 				{
-					Debug.DrawLine((Vector2)targetTransform.position, hit.point, Color.red);
-					hitPoints.Add(hit.point);
+					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					vertices.Add(hit.point);
 				}
 
-				hit = Physics2D.Raycast(targetTransform.position, smallPositiveRotation * direction);
+				hit = Physics2D.Raycast(targetPosition, smallPositiveRotation * direction);
 				if (hit)
 				{
-					Debug.DrawLine((Vector2)targetTransform.position, hit.point, Color.red);
-					hitPoints.Add(hit.point);
+					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					vertices.Add(hit.point);
 				}
 			}
 
-			hitPoints.Reverse();
-			hitPoints.Insert(0, targetTransform.position);
-			
+			vertices.Reverse();
+			vertices.Insert(0, targetPosition);
 
 
-			int[] triangles = new int[(hitPoints.Count-1) * 3];
-			/*triangles[0] = 0;
-			triangles[1] = 1;
-			triangles[2] = 2;
-
-			triangles[3] = 0;
-			triangles[4] = 3;
-			triangles[5] = 4;
-
-			triangles[6] = 0;
-			triangles[7] = 5;
-			triangles[8] = 6;
-
-			triangles[9] = 0;
-			triangles[10] = 7;
-			triangles[11] = 8;
-			*/
-
-
+			int[] triangles = new int[(vertices.Count - 1) * 3];
 
 			int index = 0;
-			for (int i = 1; i < hitPoints.Count - 1; i++)
+			for (int i = 1; i < vertices.Count - 1; i++)
 			{
 				triangles[index] = 0;
 				index++;
@@ -167,27 +146,14 @@ namespace Doodads
 			triangles[index] = 0;
 
 			index++;
-			triangles[index] = hitPoints.Count-1;
+			triangles[index] = vertices.Count - 1;
 
 			index++;
 			triangles[index] = 1;
 
 			mesh.Clear();
-			mesh.vertices = vertices = hitPoints.ToArray();
+			mesh.vertices = vertices.ToArray();
 			mesh.triangles = triangles;
-		}
-
-
-
-		void Start ()
-		{
-
-		}
-
-		void Update ()
-		{
-			GenerateMesh();
-			
 		}
 
 
@@ -203,30 +169,21 @@ namespace Doodads
 			}
 		}
 
-		private void OnDrawGizmos ()
+		private void OnDrawGizmosSelected ()
 		{
 			if (vertices == null)
 				return;
 
-			Gizmos.color = Color.black;
-			for (int i = 0; i < vertices.Length; i++)
-			{
-				if (i == 0 || i == 1 || i == 3)
-					Gizmos.color = Color.yellow;
-				else
-					Gizmos.color = Color.red;
+			Gizmos.color = Color.red;
+			for (int i = 0; i < vertices.Count; i++)
 				Gizmos.DrawSphere(vertices[i], 0.1f);
-			}
 		}
 
 		// Compare two vector3 positions depending on angle to transform
 		public int Compare (Vector3 A, Vector3 B)
 		{
-			// Ascending order
-
-			double angleA = Math.Atan2(A.y - targetTransform.position.y, A.x - targetTransform.position.x);
-			double angleB = Math.Atan2(B.y - targetTransform.position.y, B.x - targetTransform.position.x);
-
+			double angleA = Math.Atan2(A.y - (eyeTransform.position + offset).y, A.x - (eyeTransform.position + offset).x);
+			double angleB = Math.Atan2(B.y - (eyeTransform.position + offset).y, B.x - (eyeTransform.position + offset).x);
 
 			if (angleA == angleB)
 				return 0;
