@@ -65,7 +65,7 @@ namespace Doodads
 
 			GenerateMesh();
 		}
-		
+
 		void Update ()
 		{
 			GenerateMesh();
@@ -93,8 +93,8 @@ namespace Doodads
 
 		private void GenerateMesh ()
 		{
-			var targetPosition = eyeTransform.position + offset;
-			
+			Vector2 targetPosition = eyeTransform.position + offset;
+
 			// Sort uniqueEndpoints depending on angle
 			uniqueEndpoints.Sort(this);
 
@@ -102,7 +102,7 @@ namespace Doodads
 
 			for (int i = 0; i < uniqueEndpoints.Count; i++)
 			{
-				var direction = uniqueEndpoints[i] - targetPosition;
+				var direction = (Vector2)uniqueEndpoints[i] - targetPosition;
 
 				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction);
 				if (hit)
