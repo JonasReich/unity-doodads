@@ -38,7 +38,7 @@ namespace Doodads
 
 
 		List<Vector3> uniqueEndpoints;
-		List<Vector3> vertices;
+		List<Vector3> vertices = new List<Vector3>();
 		Mesh mesh;
 		MeshFilter meshFilter;
 
@@ -98,7 +98,7 @@ namespace Doodads
 			// Sort uniqueEndpoints depending on angle
 			uniqueEndpoints.Sort(this);
 
-			vertices = new List<Vector3>();
+			vertices.Clear();
 
 			for (int i = 0; i < uniqueEndpoints.Count; i++)
 			{
@@ -126,16 +126,19 @@ namespace Doodads
 				}
 			}
 
-			vertices.Reverse();
-			vertices.Insert(0, targetPosition);
+			vertices.Add(targetPosition);
 
 
-			int[] triangles = new int[(vertices.Count - 1) * 3];
+			//-------------------
+			// Generate triangles
+			//-------------------
+
+			int[] triangles = new int[vertices.Count * 3];
 
 			int index = 0;
-			for (int i = 1; i < vertices.Count - 1; i++)
+			for (int i = 0; i < vertices.Count - 1; i++)
 			{
-				triangles[index] = 0;
+				triangles[index] = vertices.Count - 1;
 				index++;
 				triangles[index] = i;
 				index++;
@@ -143,16 +146,19 @@ namespace Doodads
 				index++;
 			}
 
+			// Last set of triangles
+			triangles[index] = vertices.Count - 1;
+			index++;
+			triangles[index] = vertices.Count - 2;
+			index++;
 			triangles[index] = 0;
 
-			index++;
-			triangles[index] = vertices.Count - 1;
-
-			index++;
-			triangles[index] = 1;
+			//-------------------
+			// Apply changes
+			//-------------------
 
 			mesh.Clear();
-			mesh.vertices = vertices.ToArray();
+			mesh.SetVertices(vertices);
 			mesh.triangles = triangles;
 		}
 
