@@ -9,29 +9,15 @@ namespace Doodads
 	/// <summary>
 	/// 
 	/// </summary>
-	public class Tetahedron : MonoBehaviour
+	public class Tetrahedron : MonoBehaviour
 	{
 		void Awake ()
 		{
 			Initialize();
 		}
 
-		void Start ()
-		{
-
-		}
-
-		void Update ()
-		{
-
-		}
-
-		private bool initialized;
 		public void Initialize ()
 		{
-			if (initialized)
-				return;
-
 			//-------------------
 			// Mesh Filter
 			//-------------------
@@ -57,6 +43,7 @@ namespace Doodads
 			p3 += new Vector3(-0.5f, -sqrt075 / 3f, -sqrt075 / 3f);
 
 			Mesh mesh = meshFilter.sharedMesh = new Mesh();
+			mesh.name = "Tetrahedron";
 
 			mesh.vertices = new Vector3[] {
 				p0,p1,p2,
@@ -98,7 +85,7 @@ namespace Doodads
 
 			meshRenderer.material = new Material(Shader.Find("Standard"));
 
-			initialized = true;
+			DestroyImmediate(this);
 		}
 	}
 }
