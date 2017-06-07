@@ -110,7 +110,9 @@ namespace Doodads.Editor
 
 					EditorGUILayout.EndHorizontal();
 				}
+			GUILayout.Space(5);
 			GUILayout.Box("", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
+			GUILayout.Space(2);
 			EditorGUILayout.BeginHorizontal();
 
 			GUILayout.Space(5);

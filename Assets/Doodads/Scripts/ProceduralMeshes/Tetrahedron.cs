@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Doodads
 {
 	/// <summary>
-	/// 
+	/// Procedural tetrahedron mesh
 	/// </summary>
 	public class Tetrahedron : MonoBehaviour
 	{
@@ -16,6 +16,10 @@ namespace Doodads
 			Initialize();
 		}
 
+		/// <summary>
+		/// Creates a Tetrahedron mesh and attaches it to the GameObject.
+		/// Destroys self after completion.
+		/// </summary>
 		public void Initialize ()
 		{
 			//-------------------

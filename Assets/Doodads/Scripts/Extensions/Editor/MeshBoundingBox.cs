@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Doodads.Editor
 {
 	/// <summary>
-	/// Adds an AABB gizmo to MeshRenderers
+	/// Draws an AABB gizmo around MeshRenderers
 	/// </summary>
 	[CustomEditor(typeof(MeshRenderer)), CanEditMultipleObjects]
 	public class MeshBoundingBox : UnityEditor.Editor
@@ -20,11 +20,12 @@ namespace Doodads.Editor
 		{
 			base.OnInspectorGUI();
 
-			GUILayout.Space(20);
+			GUILayout.Space(5);
+			GUILayout.Box("", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
+			GUILayout.Space(2);
 
 			var drawBoundingBoxBefore = drawBoundingBox;
-			//drawBoundingBox = GUILayout.Toggle(drawBoundingBox, "Draw Bounding Box", "Button");
-			drawBoundingBox = GUILayout.Toggle(drawBoundingBox, "Draw Bounding Box");
+			drawBoundingBox = EditorGUILayout.Toggle("Draw Bounding Box", drawBoundingBox);
 
 			// Repaint on value change
 			if (drawBoundingBox != drawBoundingBoxBefore)
@@ -44,9 +45,43 @@ namespace Doodads.Editor
 					bounds.Encapsulate(renderer.bounds);
 
 				Handles.DrawWireCube(bounds.center, bounds.size);
+
+				if (Tools.current == Tool.Scale)
+				{
+					GUIStyle style = new GUIStyle();
+					style.fontStyle = FontStyle.Bold;
+					style.alignment = TextAnchor.MiddleCenter;
+					bg_tex = bg_tex == null ? MakeTex(1, 1, Color.black) : bg_tex;
+					style.normal.background = bg_tex;
+
+					style.normal.textColor = Handles.xAxisColor;
+					Handles.Label(bounds.center + Vector3.right * bounds.size.x / 2f, bounds.size.x.ToString(), style);
+					
+					style.normal.textColor = Handles.yAxisColor;
+					Handles.Label(bounds.center + Vector3.up * bounds.size.y / 2f, bounds.size.y.ToString(), style);
+
+					style.normal.textColor = Handles.zAxisColor;
+					Handles.Label(bounds.center + Vector3.forward * bounds.size.z / 2f, bounds.size.z.ToString(), style);
+				}
 			}
 		}
 		
+		// helper needed to draw the dimension label backgrounds
+		Texture2D bg_tex;
+		private Texture2D MakeTex (int width, int height, Color col)
+		{
+			Color[] pix = new Color[width * height];
+
+			for (int i = 0; i < pix.Length; i++)
+				pix[i] = col;
+
+			Texture2D result = new Texture2D(width, height);
+			result.SetPixels(pix);
+			result.Apply();
+
+			return result;
+		}
+
 		void OnEnable ()
 		{
 			if (EditorPrefs.HasKey(drawBoundingBox_prefkey))
