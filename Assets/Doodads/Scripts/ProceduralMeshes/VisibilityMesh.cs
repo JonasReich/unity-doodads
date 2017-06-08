@@ -95,13 +95,32 @@ namespace Doodads
 			foreach (var collider in visionBlockingColliders)
 			{
 				var edgeCollider = collider as EdgeCollider2D;
-
 				if (edgeCollider != null)
 				{
 					for (int i = 0; i < edgeCollider.pointCount; i++)
 					{
 						uniqueEndpoints.Add((Vector2)edgeCollider.transform.position + (Vector2)(edgeCollider.transform.rotation * (edgeCollider.offset + edgeCollider.points[i])));
 					}
+					continue;
+				}
+
+				var boxCollider = collider as BoxCollider2D;
+				if (boxCollider != null)
+				{
+					Vector2 size = boxCollider.size;
+					Vector2 worldPos = (Vector2)boxCollider.transform.position + boxCollider.offset;
+
+					var p0 = worldPos + (Vector2)(boxCollider.transform.rotation * new Vector2(+boxCollider.size.x / 2f, +boxCollider.size.y / 2f));
+					var p1 = worldPos + (Vector2)(boxCollider.transform.rotation * new Vector2(+boxCollider.size.x / 2f, -boxCollider.size.y / 2f));
+					var p2 = worldPos + (Vector2)(boxCollider.transform.rotation * new Vector2(-boxCollider.size.x / 2f, -boxCollider.size.y / 2f));
+					var p3 = worldPos + (Vector2)(boxCollider.transform.rotation * new Vector2(-boxCollider.size.x / 2f, +boxCollider.size.y / 2f));
+
+					uniqueEndpoints.Add(p0);
+					uniqueEndpoints.Add(p1);
+					uniqueEndpoints.Add(p2);
+					uniqueEndpoints.Add(p3);
+
+					continue;
 				}
 			}
 			return uniqueEndpoints;
@@ -123,21 +142,21 @@ namespace Doodads
 				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction);
 				if (hit)
 				{
-					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
 
 				hit = Physics2D.Raycast(targetPosition, direction);
 				if (hit)
 				{
-					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
 
 				hit = Physics2D.Raycast(targetPosition, smallPositiveRotation * direction);
 				if (hit)
 				{
-					//Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
 			}
