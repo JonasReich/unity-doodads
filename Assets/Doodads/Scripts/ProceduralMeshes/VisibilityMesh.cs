@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Doodads
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	public class VisibilityMesh : MonoBehaviour, IComparer<Vector3>
 	{
@@ -20,10 +20,10 @@ namespace Doodads
 		 * ---------------------------------------
 		 * 1. Amit Patel's "Red Blob Games" blog:
 		 * http://www.redblobgames.com/articles/visibility/
-		 * 
+		 *
 		 * 2. Nicky Case's "SIGHT & LIGHT":
 		 * http://ncase.me/sight-and-light/
-		 * 
+		 *
 		 * 3. Catlike Coding's Tutorial on procedural Unity meshes:
 		 * http://catlikecoding.com/unity/tutorials/procedural-grid/
 		 * ---------------------------------------*/
@@ -32,7 +32,8 @@ namespace Doodads
 		static readonly Quaternion smallNegativeRotation = Quaternion.Euler(0, 0, -0.0001f);
 
 		public Transform eyeTransform;
-		public List<Collider2D> visionBlockingColliders;
+		public LayerMask visionBlockingLayers;
+		List<Collider2D> visionBlockingColliders;
 		public Material material;
 		public Vector3 offset;
 
@@ -46,22 +47,37 @@ namespace Doodads
 		void Awake ()
 		{
 			//-------------------
-			// Components
+			// Get references to colliders
+			//-------------------
+			visionBlockingColliders = new List<Collider2D>();
+			var allColliders = FindObjectsOfType<Collider2D>();
+			foreach (var item in allColliders)
+				if (visionBlockingLayers.Contains(item.gameObject.layer))
+					visionBlockingColliders.Add(item);
+
+			uniqueEndpoints = GenerateEndpointList(visionBlockingColliders);
+
+			//-------------------
+			// Add Components
 			//-------------------
 
 			meshFilter = GetComponent<MeshFilter>();
 			if (meshFilter == null)
 				meshFilter = gameObject.AddComponent<MeshFilter>();
 
+			meshFilter.sharedMesh = mesh = new Mesh();
+			mesh.name = "Visibility Mesh";
+
+
 			MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
 			if (meshRenderer == null)
 				meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
 			meshRenderer.material = material;
 
-			uniqueEndpoints = GenerateEndpointList(visionBlockingColliders);
-
-			GetComponent<MeshFilter>().sharedMesh = mesh = new Mesh();
-			mesh.name = "Visibility Mesh";
+			//-------------------
+			// Generate first mesh instance
+			//-------------------
 
 			GenerateMesh();
 		}
