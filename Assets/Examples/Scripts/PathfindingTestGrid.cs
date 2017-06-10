@@ -11,34 +11,34 @@ using UnityEngine;
 namespace Doodads.Examples
 {
 	/// <summary>
-	///
+	/// Used to showcase the funcitonality of my generic grid implementation and various 2D pathfinindg algorithms
 	/// </summary>
 	public class PathfindingTestGrid : MonoBehaviour
 	{
-		public PathfindingTestTile prefab;
+		public PathfindingTestTile tilePrefab;
 
 		[SerializeField, HideInInspector]
-		Grid grid;
+		ComponentGridWithCosts<PathfindingTestTile> grid;
 
 		[SerializeField]
 		int width, height;
 		[SerializeField]
 		XY origin, target;
 
-		LayerMask layerMask;
-
 		public PathfindingAlgorithms.Algorithm algorithm;
+
+		LayerMask tileLayerMask;
 
 
 		void Awake ()
 		{
-			layerMask = layerMask.Add(prefab.gameObject.layer);
+			tileLayerMask = tileLayerMask.Add(tilePrefab.gameObject.layer);
 		}
 
-		public void Update ()
+		void Update ()
 		{
 			RaycastHit hit;
-			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 300f, layerMask))
+			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 300f, tileLayerMask))
 				target = new XY((int)hit.point.x, (int)hit.point.y);
 			else
 				target = XY.invalid;
@@ -60,27 +60,19 @@ namespace Doodads.Examples
 			}
 		}
 
+
 		public void Refresh ()
 		{
 			while (transform.childCount != 0)
 				DestroyImmediate(transform.GetChild(0).gameObject);
 
-			grid = new Grid(width, height, prefab, transform);
+			grid = new ComponentGridWithCosts<PathfindingTestTile>(width, height, tilePrefab, transform);
 		}
 
-		public bool ExitCondition<T> (IGrid<T> grid, XY tile)
+
+		bool ExitCondition<T> (IGrid<T> grid, XY tile)
 		{
 			return tile.x == target.x && tile.y == target.y;
-		}
-
-
-		[System.Serializable]
-
-		public class Grid : ComponentGridWithCosts<PathfindingTestTile>
-		{
-			public Grid (int width, int height, PathfindingTestTile prefab, Transform root) : base(width, height, prefab, root)
-			{
-			}
 		}
 	}
 }
