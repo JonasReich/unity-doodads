@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -15,6 +15,8 @@ namespace Doodads.Editor
 	/// </summary>
 	public class AnimationHierarchyEditor : EditorWindow
 	{
+		// Source: https://github.com/s-m-k/Unity-Animation-Hierarchy-Editor
+
 		private static int columnWidth = 300;
 
 		private Animator animatorObject;
