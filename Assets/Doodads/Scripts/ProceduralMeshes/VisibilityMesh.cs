@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Doodads
 {
 	/// <summary>
-	///
+	/// Procedural mesh which displays a characters field of vision
 	/// </summary>
 	public class VisibilityMesh : MonoBehaviour, IComparer<Vector3>
 	{
@@ -28,21 +28,33 @@ namespace Doodads
 		 * http://catlikecoding.com/unity/tutorials/procedural-grid/
 		 * ---------------------------------------*/
 
+		// These small Quaternions are used for the secondary raycasts
+		// that are executed to reduce edge collision problems
 		static readonly Quaternion smallPositiveRotation = Quaternion.Euler(0, 0, +0.0001f);
 		static readonly Quaternion smallNegativeRotation = Quaternion.Euler(0, 0, -0.0001f);
 
+		/// <summary>
+		/// Location and orientation of the "eyes" that the mesh is generated for.
+		/// Usually this would be a characters head.
+		/// </summary>
 		public Transform eyeTransform;
+
+		/// <summary>
+		/// All layers that contain 2D colliders which should be respected by the mesh generation algorithm
+		/// </summary>
 		public LayerMask visionBlockingLayers;
-		List<Collider2D> visionBlockingColliders;
+
+		/// <summary>
+		/// Material to draw the mesh with
+		/// </summary>
 		public Material material;
-		public Vector3 offset;
 
-
-		List<Vector3> uniqueEndpoints;
+		List<Collider2D> visionBlockingColliders;
+		List<Vector3> colliderEndpoints;
 		List<Vector3> vertices = new List<Vector3>();
 		Mesh mesh;
 		MeshFilter meshFilter;
-
+		
 
 		void Awake ()
 		{
@@ -55,7 +67,7 @@ namespace Doodads
 				if (visionBlockingLayers.Contains(item.gameObject.layer))
 					visionBlockingColliders.Add(item);
 
-			uniqueEndpoints = GenerateEndpointList(visionBlockingColliders);
+			colliderEndpoints = GenerateEndpointList(visionBlockingColliders);
 
 			//-------------------
 			// Add Components
@@ -87,8 +99,35 @@ namespace Doodads
 			GenerateMesh();
 		}
 
+		void OnDrawGizmosSelected ()
+		{
+			if (vertices == null)
+				return;
 
-		private List<Vector3> GenerateEndpointList (List<Collider2D> visionBlockingColliders)
+			Gizmos.color = Color.red;
+			for (int i = 0; i < vertices.Count; i++)
+				Gizmos.DrawSphere(vertices[i], 0.1f);
+		}
+
+		
+		/// <summary>
+		/// Compare two vector3 positions depending on angle to transform. Used to implement IComparer<Vector3> for Vector sorting
+		/// </summary>
+		public int Compare (Vector3 A, Vector3 B)
+		{
+			double angleA = Math.Atan2(A.y - (eyeTransform.position).y, A.x - (eyeTransform.position).x);
+			double angleB = Math.Atan2(B.y - (eyeTransform.position).y, B.x - (eyeTransform.position).x);
+
+			if (angleA == angleB)
+				return 0;
+			if (angleA > angleB)
+				return 1;
+			else // (angleA < angleB)
+				return -1;
+		}
+
+
+		List<Vector3> GenerateEndpointList (List<Collider2D> visionBlockingColliders)
 		{
 			var uniqueEndpoints = new List<Vector3>();
 
@@ -126,18 +165,18 @@ namespace Doodads
 			return uniqueEndpoints;
 		}
 
-		private void GenerateMesh ()
+		void GenerateMesh ()
 		{
-			Vector2 targetPosition = eyeTransform.position + offset;
+			Vector2 targetPosition = eyeTransform.position;
 
 			// Sort uniqueEndpoints depending on angle
-			uniqueEndpoints.Sort(this);
+			colliderEndpoints.Sort(this);
 
 			vertices.Clear();
 
-			for (int i = 0; i < uniqueEndpoints.Count; i++)
+			for (int i = 0; i < colliderEndpoints.Count; i++)
 			{
-				var direction = (Vector2)uniqueEndpoints[i] - targetPosition;
+				var direction = (Vector2)colliderEndpoints[i] - targetPosition;
 
 				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction);
 				if (hit)
@@ -196,7 +235,7 @@ namespace Doodads
 			mesh.SetVertices(vertices);
 			mesh.triangles = triangles;
 		}
-
+		
 
 		public struct Line
 		{
@@ -208,30 +247,6 @@ namespace Doodads
 				this.A = A;
 				this.B = B;
 			}
-		}
-
-		private void OnDrawGizmosSelected ()
-		{
-			if (vertices == null)
-				return;
-
-			Gizmos.color = Color.red;
-			for (int i = 0; i < vertices.Count; i++)
-				Gizmos.DrawSphere(vertices[i], 0.1f);
-		}
-
-		// Compare two vector3 positions depending on angle to transform
-		public int Compare (Vector3 A, Vector3 B)
-		{
-			double angleA = Math.Atan2(A.y - (eyeTransform.position + offset).y, A.x - (eyeTransform.position + offset).x);
-			double angleB = Math.Atan2(B.y - (eyeTransform.position + offset).y, B.x - (eyeTransform.position + offset).x);
-
-			if (angleA == angleB)
-				return 0;
-			if (angleA > angleB)
-				return 1;
-			else // (angleA < angleB)
-				return -1;
 		}
 	}
 }
