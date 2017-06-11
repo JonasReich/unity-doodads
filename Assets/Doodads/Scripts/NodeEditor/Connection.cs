@@ -15,11 +15,11 @@ namespace Doodads.Editor
 	/// </summary>
 	public class Connection
 	{
-		public ConnectionPoint inPoint;
-		public ConnectionPoint outPoint;
+		public NodeKnob inPoint;
+		public NodeKnob outPoint;
 		public Action<Connection> OnClickRemoveConnection;
 
-		public Connection (ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> OnClickRemoveConnection)
+		public Connection (NodeKnob inPoint, NodeKnob outPoint, Action<Connection> OnClickRemoveConnection)
 		{
 			this.inPoint = inPoint;
 			this.outPoint = outPoint;
@@ -29,22 +29,14 @@ namespace Doodads.Editor
 		public void Draw ()
 		{
 			Handles.DrawBezier(
-				inPoint.rect.center,
-				outPoint.rect.center,
-				inPoint.rect.center + Vector2.left * 50f,
-				outPoint.rect.center - Vector2.left * 50f,
+				inPoint.node.rect.position + inPoint.rect.center,
+				outPoint.node.rect.position + outPoint.rect.center,
+				inPoint.node.rect.position + inPoint.rect.center + Vector2.left * 50f,
+				outPoint.node.rect.position + outPoint.rect.center - Vector2.left * 50f,
 				Color.white,
 				null,
 				2f
 			);
-
-			if (Handles.Button((inPoint.rect.center + outPoint.rect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
-			{
-				if (OnClickRemoveConnection != null)
-				{
-					OnClickRemoveConnection(this);
-				}
-			}
 		}
 	}
 }

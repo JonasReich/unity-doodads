@@ -23,8 +23,8 @@ namespace Doodads.Editor
 		private GUIStyle inPointStyle;
 		private GUIStyle outPointStyle;
 
-		private ConnectionPoint selectedInPoint;
-		private ConnectionPoint selectedOutPoint;
+		private NodeKnob selectedInPoint;
+		private NodeKnob selectedOutPoint;
 
 		private Vector2 offset;
 		private Vector2 drag;
@@ -76,13 +76,16 @@ namespace Doodads.Editor
 
 		private void DrawNodes ()
 		{
+			BeginWindows();
 			if (nodes != null)
 			{
 				for (int i = 0; i < nodes.Count; i++)
 				{
-					nodes[i].Draw();
+					nodes[i].rect = GUILayout.Window(i, nodes[i].rect, nodes[i].OnGUI, nodes[i].name);
+					//GUI.Box(nodes[i].rect, nodes[i].name, nodes[i].style);
 				}
 			}
+			EndWindows();
 		}
 
 		private void DrawConnections ()
@@ -146,10 +149,11 @@ namespace Doodads.Editor
 			if (nodes == null)
 				nodes = new List<Node>();
 
-			nodes.Add(new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+			var newNode = new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+			nodes.Add(newNode);
 		}
 
-		private void OnClickInPoint (ConnectionPoint inPoint)
+		private void OnClickInPoint (NodeKnob inPoint)
 		{
 			selectedInPoint = inPoint;
 
@@ -167,7 +171,7 @@ namespace Doodads.Editor
 			}
 		}
 
-		private void OnClickOutPoint (ConnectionPoint outPoint)
+		private void OnClickOutPoint (NodeKnob outPoint)
 		{
 			selectedOutPoint = outPoint;
 
@@ -214,7 +218,7 @@ namespace Doodads.Editor
 
 				for (int i = 0; i < connections.Count; i++)
 				{
-					if (connections[i].inPoint == node.inPoint || connections[i].outPoint == node.outPoint)
+					if (connections[i].inPoint == node.input || connections[i].outPoint == node.output)
 					{
 						connectionsToRemove.Add(connections[i]);
 					}
@@ -251,9 +255,9 @@ namespace Doodads.Editor
 			if (selectedInPoint != null && selectedOutPoint == null)
 			{
 				Handles.DrawBezier(
-					selectedInPoint.rect.center,
+					selectedInPoint.node.rect.position + selectedInPoint.rect.center,
 					e.mousePosition,
-					selectedInPoint.rect.center + Vector2.left * 50f,
+					selectedInPoint.node.rect.position + selectedInPoint.rect.center + Vector2.left * 50f,
 					e.mousePosition - Vector2.left * 50f,
 					Color.white,
 					null,
@@ -266,9 +270,9 @@ namespace Doodads.Editor
 			if (selectedOutPoint != null && selectedInPoint == null)
 			{
 				Handles.DrawBezier(
-					selectedOutPoint.rect.center,
+					selectedOutPoint.node.rect.position + selectedOutPoint.rect.center,
 					e.mousePosition,
-					selectedOutPoint.rect.center - Vector2.left * 50f,
+					selectedOutPoint.node.rect.position + selectedOutPoint.rect.center - Vector2.left * 50f,
 					e.mousePosition + Vector2.left * 50f,
 					Color.white,
 					null,

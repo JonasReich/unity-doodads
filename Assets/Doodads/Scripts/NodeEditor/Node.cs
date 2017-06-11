@@ -16,12 +16,12 @@ namespace Doodads.Editor
 	public class Node
 	{
 		public Rect rect;
-		public string title;
+		public string name = "Default Node";
 		public bool isDragged;
 		public bool isSelected;
 
-		public ConnectionPoint inPoint;
-		public ConnectionPoint outPoint;
+		public NodeKnob input;
+		public NodeKnob output;
 
 		public GUIStyle style;
 		public GUIStyle defaultNodeStyle;
@@ -29,12 +29,12 @@ namespace Doodads.Editor
 
 		public Action<Node> OnRemoveNode;
 
-		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<NodeKnob> OnClickInPoint, Action<NodeKnob> OnClickOutPoint, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
 			style = nodeStyle;
-			inPoint = new ConnectionPoint(this, ConnectionPoint.Type.In, inPointStyle, OnClickInPoint);
-			outPoint = new ConnectionPoint(this, ConnectionPoint.Type.Out, outPointStyle, OnClickOutPoint);
+			input = new NodeInput(this, NodeKnob.Type.In, inPointStyle, OnClickInPoint);
+			output = new NodeOutput(this, NodeKnob.Type.Out, outPointStyle, OnClickOutPoint);
 			defaultNodeStyle = nodeStyle;
 			selectedNodeStyle = selectedStyle;
 			OnRemoveNode = OnClickRemoveNode;
@@ -44,12 +44,23 @@ namespace Doodads.Editor
 		{
 			rect.position += delta;
 		}
-
-		public void Draw ()
+		
+		public void OnGUI (int id)
 		{
-			GUI.Box(rect, title, style);
-			inPoint.Draw();
-			outPoint.Draw();
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.BeginVertical();
+			// Inputs
+			input.OnGUI();
+
+			EditorGUILayout.EndVertical();
+			EditorGUILayout.BeginVertical();
+			// Outputs
+			output.OnGUI();
+
+			EditorGUILayout.EndVertical();
+			EditorGUILayout.EndHorizontal();
+
+			//GUI.DragWindow();
 		}
 
 		public bool ProcessEvents (Event e)
