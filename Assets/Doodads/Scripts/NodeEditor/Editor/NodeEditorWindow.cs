@@ -19,8 +19,6 @@ namespace Doodads.Editor
 
 		private GUIStyle nodeStyle;
 		private GUIStyle selectedNodeStyle;
-		private GUIStyle inPointStyle;
-		private GUIStyle outPointStyle;
 
 		private NodeInput selectedInPoint;
 		private NodeOutput selectedOutPoint;
@@ -44,16 +42,6 @@ namespace Doodads.Editor
 			selectedNodeStyle = new GUIStyle();
 			selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
 			selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
-
-			inPointStyle = new GUIStyle();
-			inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
-			inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
-			inPointStyle.border = new RectOffset(4, 4, 12, 12);
-
-			outPointStyle = new GUIStyle();
-			outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
-			outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
-			outPointStyle.border = new RectOffset(4, 4, 12, 12);
 		}
 
 		private void OnGUI ()
@@ -146,7 +134,7 @@ namespace Doodads.Editor
 			if (nodes == null)
 				nodes = new List<Node>();
 
-			var newNode = new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+			var newNode = new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
 			nodes.Add(newNode);
 		}
 

@@ -29,12 +29,12 @@ namespace Doodads.Editor
 
 		public Action<Node> OnRemoveNode;
 
-		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
 			style = nodeStyle;
-			input = new NodeInput(this, NodeKnob.Type.In, inPointStyle, OnClickInPoint);
-			output = new NodeOutput(this, NodeKnob.Type.Out, outPointStyle, OnClickOutPoint);
+			input = new NodeInput(this, NodeKnob.Type.In, OnClickInPoint);
+			output = new NodeOutput(this, NodeKnob.Type.Out, OnClickOutPoint);
 			defaultNodeStyle = nodeStyle;
 			selectedNodeStyle = selectedStyle;
 			OnRemoveNode = OnClickRemoveNode;

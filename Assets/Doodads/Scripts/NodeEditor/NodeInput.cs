@@ -18,7 +18,7 @@ namespace Doodads.Editor
 		NodeOutput connectedOutput = null;
 		Action<NodeInput> OnClickKnob;
 
-		public NodeInput (Node node, Type type, GUIStyle style, Action<NodeInput> OnClickKnob) : base(node, type, style)
+		public NodeInput (Node node, Type type, Action<NodeInput> OnClickKnob) : base(node, type)
 		{
 			this.OnClickKnob = OnClickKnob;
 		}

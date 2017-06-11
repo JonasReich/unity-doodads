@@ -23,13 +23,10 @@ namespace Doodads.Editor
 
 		public Node node;
 
-		public GUIStyle style;
-
-		public NodeKnob (Node node, Type type, GUIStyle style)
+		public NodeKnob (Node node, Type type)
 		{
 			this.node = node;
 			this.type = type;
-			this.style = style;
 			rect = new Rect(0, 0, 10f, 20f);
 		}
 
