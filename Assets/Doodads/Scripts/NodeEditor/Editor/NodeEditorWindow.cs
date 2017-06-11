@@ -16,15 +16,14 @@ namespace Doodads.Editor
 	public class NodeEditorWindow : EditorWindow
 	{
 		private List<Node> nodes;
-		private List<Connection> connections;
 
 		private GUIStyle nodeStyle;
 		private GUIStyle selectedNodeStyle;
 		private GUIStyle inPointStyle;
 		private GUIStyle outPointStyle;
 
-		private NodeKnob selectedInPoint;
-		private NodeKnob selectedOutPoint;
+		private NodeInput selectedInPoint;
+		private NodeOutput selectedOutPoint;
 
 		private Vector2 offset;
 		private Vector2 drag;
@@ -90,13 +89,11 @@ namespace Doodads.Editor
 
 		private void DrawConnections ()
 		{
-			if (connections != null)
-			{
-				for (int i = 0; i < connections.Count; i++)
+			if (nodes != null && nodes.Count > 0)
+				foreach (var node in nodes)
 				{
-					connections[i].Draw();
+					node.input.DrawConnection();
 				}
-			}
 		}
 
 		private void ProcessEvents (Event e)
@@ -153,7 +150,7 @@ namespace Doodads.Editor
 			nodes.Add(newNode);
 		}
 
-		private void OnClickInPoint (NodeKnob inPoint)
+		private void OnClickInPoint (NodeInput inPoint)
 		{
 			selectedInPoint = inPoint;
 
@@ -171,7 +168,7 @@ namespace Doodads.Editor
 			}
 		}
 
-		private void OnClickOutPoint (NodeKnob outPoint)
+		private void OnClickOutPoint (NodeOutput outPoint)
 		{
 			selectedOutPoint = outPoint;
 
@@ -189,19 +186,9 @@ namespace Doodads.Editor
 			}
 		}
 
-		private void OnClickRemoveConnection (Connection connection)
-		{
-			connections.Remove(connection);
-		}
-
 		private void CreateConnection ()
 		{
-			if (connections == null)
-			{
-				connections = new List<Connection>();
-			}
-
-			connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+			selectedInPoint.Connect(selectedOutPoint);
 		}
 
 		private void ClearConnectionSelection ()
@@ -212,26 +199,7 @@ namespace Doodads.Editor
 
 		private void OnClickRemoveNode (Node node)
 		{
-			if (connections != null)
-			{
-				List<Connection> connectionsToRemove = new List<Connection>();
-
-				for (int i = 0; i < connections.Count; i++)
-				{
-					if (connections[i].inPoint == node.input || connections[i].outPoint == node.output)
-					{
-						connectionsToRemove.Add(connections[i]);
-					}
-				}
-
-				for (int i = 0; i < connectionsToRemove.Count; i++)
-				{
-					connections.Remove(connectionsToRemove[i]);
-				}
-
-				connectionsToRemove = null;
-			}
-
+			node.Disconnect();
 			nodes.Remove(node);
 		}
 

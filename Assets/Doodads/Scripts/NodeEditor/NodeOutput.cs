@@ -15,8 +15,12 @@ namespace Doodads.Editor
 	/// </summary>
 	public class NodeOutput : NodeKnob
 	{
-		public NodeOutput (Node node, Type type, GUIStyle style, Action<NodeKnob> OnClickKnob) : base(node, type, style, OnClickKnob)
+		List<NodeInput> connectedInputs = new List<NodeInput>();
+		Action<NodeOutput> OnClickKnob;
+
+		public NodeOutput (Node node, Type type, GUIStyle style, Action<NodeOutput> OnClickKnob) : base(node, type, style)
 		{
+			this.OnClickKnob = OnClickKnob;
 		}
 
 		public override void OnGUI ()
@@ -29,6 +33,22 @@ namespace Doodads.Editor
 				if (OnClickKnob != null)
 					OnClickKnob(this);
 			EditorGUILayout.EndHorizontal();
+		}
+
+		public void Connect(NodeInput nodeInput)
+		{
+			connectedInputs.Add(nodeInput);
+		}
+
+		override public void Disconnect ()
+		{
+			foreach (var nodeInput in connectedInputs)
+				nodeInput.Disconnect();
+		}
+
+		internal void Disconnect (NodeInput nodeInput)
+		{
+			connectedInputs.Remove(nodeInput);
 		}
 	}
 }

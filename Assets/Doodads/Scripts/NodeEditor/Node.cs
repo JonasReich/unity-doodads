@@ -20,8 +20,8 @@ namespace Doodads.Editor
 		public bool isDragged;
 		public bool isSelected;
 
-		public NodeKnob input;
-		public NodeKnob output;
+		public NodeInput input;
+		public NodeOutput output;
 
 		public GUIStyle style;
 		public GUIStyle defaultNodeStyle;
@@ -29,7 +29,7 @@ namespace Doodads.Editor
 
 		public Action<Node> OnRemoveNode;
 
-		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<NodeKnob> OnClickInPoint, Action<NodeKnob> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+		public Node (Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
 			style = nodeStyle;
@@ -122,6 +122,12 @@ namespace Doodads.Editor
 			{
 				OnRemoveNode(this);
 			}
+		}
+
+		public void Disconnect ()
+		{
+			input.Disconnect();
+			output.Disconnect();
 		}
 	}
 }
