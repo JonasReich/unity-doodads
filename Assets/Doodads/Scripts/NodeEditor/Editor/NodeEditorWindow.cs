@@ -80,7 +80,10 @@ namespace Doodads.Editor
 			if (nodes != null && nodes.Count > 0)
 				foreach (var node in nodes)
 				{
-					node.input.DrawConnection();
+					foreach (var input in node.inputs)
+					{
+						input.DrawConnection();
+					}
 				}
 		}
 
@@ -134,7 +137,7 @@ namespace Doodads.Editor
 			if (nodes == null)
 				nodes = new List<Node>();
 
-			var newNode = new Node(mousePosition, 200, 50, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+			var newNode = new FloatNode(mousePosition, 200, 50, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
 			nodes.Add(newNode);
 		}
 

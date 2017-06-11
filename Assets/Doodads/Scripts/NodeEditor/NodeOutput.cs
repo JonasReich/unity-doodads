@@ -13,20 +13,22 @@ namespace Doodads.Editor
 	/// <summary>
 	/// 
 	/// </summary>
-	public class NodeOutput : NodeKnob
+	public abstract class NodeOutput : NodeKnob
 	{
-		List<NodeInput> connectedInputs = new List<NodeInput>();
+		protected List<NodeInput> connectedInputs = new List<NodeInput>();
 		Action<NodeOutput> OnClickKnob;
 
 		public NodeOutput (Node node, Type type, Action<NodeOutput> OnClickKnob) : base(node, type)
 		{
 			this.OnClickKnob = OnClickKnob;
+			name = "Output";
 		}
 
 		public override void OnGUI ()
 		{
 			EditorGUILayout.BeginHorizontal();
-			GUILayout.Label(name);
+			//GUILayout.Label(name);
+			OnGUILabel();
 			GUILayout.FlexibleSpace();
 			rect = GUILayoutUtility.GetRect(15, 15);
 			if (GUI.Button(rect, ""))
@@ -34,6 +36,8 @@ namespace Doodads.Editor
 					OnClickKnob(this);
 			EditorGUILayout.EndHorizontal();
 		}
+
+		abstract protected void OnGUILabel ();
 
 		public void Connect(NodeInput nodeInput)
 		{
@@ -49,6 +53,20 @@ namespace Doodads.Editor
 		internal void Disconnect (NodeInput nodeInput)
 		{
 			connectedInputs.Remove(nodeInput);
+		}
+	}
+
+	public class FloatOutput : NodeOutput
+	{
+		float value;
+
+		public FloatOutput (Node node, Type type, Action<NodeOutput> OnClickKnob) : base(node, type, OnClickKnob)
+		{
+		}
+
+		protected override void OnGUILabel ()
+		{
+			GUILayout.Label(name);
 		}
 	}
 }

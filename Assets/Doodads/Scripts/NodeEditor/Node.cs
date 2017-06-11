@@ -13,15 +13,15 @@ namespace Doodads.Editor
 	/// <summary>
 	/// 
 	/// </summary>
-	public class Node
+	public abstract class Node
 	{
 		public Rect rect;
 		public string name = "Default Node";
 		public bool isDragged;
 		public bool isSelected;
 
-		public NodeInput input;
-		public NodeOutput output;
+		public List<NodeInput> inputs = new List<NodeInput>();
+		public List<NodeOutput> outputs = new List<NodeOutput>();
 
 		public GUIStyle style;
 
@@ -30,8 +30,6 @@ namespace Doodads.Editor
 		public Node (Vector2 position, float width, float height, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
-			input = new NodeInput(this, NodeKnob.Type.In, OnClickInPoint);
-			output = new NodeOutput(this, NodeKnob.Type.Out, OnClickOutPoint);
 			OnRemoveNode = OnClickRemoveNode;
 		}
 
@@ -39,18 +37,20 @@ namespace Doodads.Editor
 		{
 			rect.position += delta;
 		}
-		
+
 		public void OnGUI (int id)
 		{
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.BeginVertical();
-			// Inputs
-			input.OnGUI();
+
+			foreach (var input in inputs)
+				input.OnGUI();
 
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.BeginVertical();
-			// Outputs
-			output.OnGUI();
+
+			foreach (var output in outputs)
+				output.OnGUI();
 
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
@@ -119,8 +119,10 @@ namespace Doodads.Editor
 
 		public void Disconnect ()
 		{
-			input.Disconnect();
-			output.Disconnect();
+			foreach (var input in inputs)
+				input.Disconnect();
+			foreach (var output in outputs)
+				output.Disconnect();
 		}
 	}
 }

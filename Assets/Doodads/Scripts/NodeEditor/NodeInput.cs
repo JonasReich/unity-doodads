@@ -13,17 +13,18 @@ namespace Doodads.Editor
 	/// <summary>
 	/// 
 	/// </summary>
-	public class NodeInput : NodeKnob
+	public abstract class NodeInput : NodeKnob
 	{
-		NodeOutput connectedOutput = null;
+		protected NodeOutput connectedOutput = null;
 		Action<NodeInput> OnClickKnob;
 
 		public NodeInput (Node node, Type type, Action<NodeInput> OnClickKnob) : base(node, type)
 		{
 			this.OnClickKnob = OnClickKnob;
+			name = "Input";
 		}
 
-		override public void OnGUI ()
+		sealed override public void OnGUI ()
 		{
 			EditorGUILayout.BeginHorizontal();
 			rect = GUILayoutUtility.GetRect(15, 15);
@@ -31,9 +32,12 @@ namespace Doodads.Editor
 				if (OnClickKnob != null)
 					OnClickKnob(this);
 			GUILayout.FlexibleSpace();
-			GUILayout.Label(name);
+			//GUILayout.Label(name);
+			OnGUILabel();
 			EditorGUILayout.EndHorizontal();
 		}
+
+		abstract protected void OnGUILabel ();
 
 		public void Connect(NodeOutput connectedOutput)
 		{
@@ -61,6 +65,29 @@ namespace Doodads.Editor
 		{
 			connectedOutput.Disconnect(this);
 			connectedOutput = null;
+		}
+	}
+
+	public class FloatInput : NodeInput
+	{
+		float value;
+
+		public FloatInput (Node node, Type type, Action<NodeInput> OnClickKnob) : base(node, type, OnClickKnob)
+		{
+		}
+
+		protected override void OnGUILabel ()
+		{
+			if (connectedOutput != null)
+			{
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.Label(name);
+				GUILayout.FlexibleSpace();
+				GUILayout.Label(value.ToString());
+				EditorGUILayout.EndHorizontal();
+			}
+			else
+				value = EditorGUILayout.FloatField(name, value);
 		}
 	}
 }

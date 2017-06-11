@@ -15,7 +15,7 @@ namespace Doodads.Editor
 	/// </summary>
 	abstract public class NodeKnob
 	{
-		public string name = "Node Knob name";
+		public string name = "abstract knob";
 
 		public Rect rect;
 
@@ -32,7 +32,5 @@ namespace Doodads.Editor
 
 		abstract public void OnGUI ();
 		abstract public void Disconnect ();
-		
-		public enum Type { In, Out }
 	}
 }
