@@ -134,7 +134,7 @@ namespace Doodads.Editor
 			if (nodes == null)
 				nodes = new List<Node>();
 
-			var newNode = new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+			var newNode = new Node(mousePosition, 200, 50, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
 			nodes.Add(newNode);
 		}
 
