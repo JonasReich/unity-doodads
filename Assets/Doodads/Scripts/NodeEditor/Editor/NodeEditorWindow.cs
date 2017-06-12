@@ -244,6 +244,10 @@ namespace Doodads.Editor
 
 		private void DrawConnectionLine (Event e)
 		{
+			// --------------
+			// Data Nodes
+			// --------------
+
 			if (selectedNodeInput != null && selectedNodeOutput == null)
 			{
 				Handles.DrawBezier(
@@ -259,12 +263,12 @@ namespace Doodads.Editor
 				GUI.changed = true;
 			}
 
-			if (selectedNodeOutput != null && selectedNodeInput == null)
+			if (selectedFlowOutput != null && selectedNodeInput == null)
 			{
 				Handles.DrawBezier(
-					selectedNodeOutput.node.rect.position + selectedNodeOutput.rect.center,
+					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center,
 					e.mousePosition,
-					selectedNodeOutput.node.rect.position + selectedNodeOutput.rect.center - Vector2.left * 50f,
+					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center - Vector2.left * 50f,
 					e.mousePosition + Vector2.left * 50f,
 					Color.white,
 					null,
@@ -273,6 +277,10 @@ namespace Doodads.Editor
 
 				GUI.changed = true;
 			}
+
+			// --------------
+			// Flow Nodes
+			// --------------
 
 			if (selectedFlowInput != null && selectedFlowOutput == null)
 			{
@@ -289,7 +297,7 @@ namespace Doodads.Editor
 				GUI.changed = true;
 			}
 
-			if (selectedFlowInput == null && selectedFlowOutput != null)
+			if (selectedFlowOutput != null && selectedFlowInput == null)
 			{
 				Handles.DrawBezier(
 					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center,
