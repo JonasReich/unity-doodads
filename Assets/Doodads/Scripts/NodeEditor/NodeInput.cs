@@ -38,7 +38,7 @@ namespace Doodads.Editor
 
 		abstract protected void DrawLabel ();
 
-		public void Connect(NodeOutput connectedOutput)
+		public void Connect (NodeOutput connectedOutput)
 		{
 			this.connectedOutput = connectedOutput;
 			connectedOutput.Connect(this);
@@ -60,10 +60,13 @@ namespace Doodads.Editor
 			);
 		}
 
-		override public void Disconnect()
+		public void Disconnect ()
 		{
-			connectedOutput.Disconnect(this);
-			connectedOutput = null;
+			if (connectedOutput != null)
+			{
+				connectedOutput.Disconnect(this);
+				connectedOutput = null;
+			}
 		}
 	}
 

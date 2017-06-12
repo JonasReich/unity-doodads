@@ -31,6 +31,5 @@ namespace Doodads.Editor
 		}
 
 		abstract public void Draw ();
-		abstract public void Disconnect ();
 	}
 }

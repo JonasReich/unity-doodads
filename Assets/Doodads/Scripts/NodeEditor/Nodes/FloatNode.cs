@@ -15,11 +15,13 @@ namespace Doodads.Editor
 	/// </summary>
 	public class FloatNode : Node
 	{
-		public FloatNode (Vector2 position, float width, float height, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode) : base(position, width, height, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode)
+		public FloatNode (Vector2 position, float width, float height, Action<Node> OnClickRemoveNode, 
+			Action<NodeInput> OnClickInput, Action<NodeOutput> OnClickOutput)
+			: base(position, width, height, OnClickRemoveNode)
 		{
 			name = "Float Node";
-			inputs.Add(new FloatInput(this, typeof(float), OnClickInPoint));
-			outputs.Add(new FloatOutput(this, typeof(float), OnClickOutPoint));
+			inputs.Add(new FloatInput(this, typeof(float), OnClickInput));
+			outputs.Add(new FloatOutput(this, typeof(float), OnClickOutput));
 		}
 	}
 }

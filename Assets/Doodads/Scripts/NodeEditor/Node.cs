@@ -27,7 +27,7 @@ namespace Doodads.Editor
 
 		public Action<Node> OnRemoveNode;
 
-		public Node (Vector2 position, float width, float height, Action<NodeInput> OnClickInPoint, Action<NodeOutput> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+		public Node (Vector2 position, float width, float height, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
 			OnRemoveNode = OnClickRemoveNode;
@@ -38,7 +38,7 @@ namespace Doodads.Editor
 			rect.position += delta;
 		}
 
-		public void Draw (int id)
+		public virtual void Draw (int id)
 		{
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.BeginVertical();
@@ -80,6 +80,8 @@ namespace Doodads.Editor
 
 					if (e.button == 1 && isSelected && rect.Contains(e.mousePosition))
 					{
+						GUI.changed = true;
+						isSelected = true;
 						ProcessContextMenu();
 						e.Use();
 					}
@@ -102,6 +104,15 @@ namespace Doodads.Editor
 			return false;
 		}
 
+		public virtual void DrawConnections ()
+		{
+			if (inputs.Count > 0)
+				foreach (var input in inputs)
+				{
+					input.DrawConnection();
+				}
+		}
+
 		private void ProcessContextMenu ()
 		{
 			GenericMenu genericMenu = new GenericMenu();
@@ -117,7 +128,7 @@ namespace Doodads.Editor
 			}
 		}
 
-		public void Disconnect ()
+		public virtual void DisconnectAll ()
 		{
 			foreach (var input in inputs)
 				input.Disconnect();

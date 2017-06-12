@@ -20,8 +20,10 @@ namespace Doodads.Editor
 		private GUIStyle nodeStyle;
 		private GUIStyle selectedNodeStyle;
 
-		private NodeInput selectedInPoint;
-		private NodeOutput selectedOutPoint;
+		private NodeInput selectedNodeInput;
+		private NodeOutput selectedNodeOutput;
+		private FlowNodeInputKnob selectedFlowInput;
+		private FlowNodeOutputKnob selectedFlowOutput;
 
 		private Vector2 offset;
 		private Vector2 drag;
@@ -80,10 +82,7 @@ namespace Doodads.Editor
 			if (nodes != null && nodes.Count > 0)
 				foreach (var node in nodes)
 				{
-					foreach (var input in node.inputs)
-					{
-						input.DrawConnection();
-					}
+					node.DrawConnections();
 				}
 		}
 
@@ -129,6 +128,7 @@ namespace Doodads.Editor
 		{
 			GenericMenu genericMenu = new GenericMenu();
 			genericMenu.AddItem(new GUIContent("Add node"), false, () => OnClickAddNode(mousePosition));
+			genericMenu.AddItem(new GUIContent("Add Flow Node"), false, () => OnClickAddFlowNode(mousePosition));
 			genericMenu.ShowAsContext();
 		}
 
@@ -137,60 +137,93 @@ namespace Doodads.Editor
 			if (nodes == null)
 				nodes = new List<Node>();
 
-			var newNode = new FloatNode(mousePosition, 200, 50, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+			var newNode = new FloatNode(mousePosition, 200, 50, OnClickRemoveNode, OnClickDataNodeInput, OnClickDataNodeOutput);
 			nodes.Add(newNode);
 		}
 
-		private void OnClickInPoint (NodeInput inPoint)
-		{
-			selectedInPoint = inPoint;
 
-			if (selectedOutPoint != null)
+		private void OnClickAddFlowNode (Vector2 mousePosition)
+		{
+			if (nodes == null)
+				nodes = new List<Node>();
+
+			var newNode = new FlowNode(mousePosition, 200, 50, OnClickRemoveNode, OnClickFlowInput, OnClickFlowOutput);
+			nodes.Add(newNode);
+		}
+
+		//--------------------------
+		// Flow Connections
+		//--------------------------
+
+		private void OnClickFlowInput (FlowNodeInputKnob inPoint)
+		{
+			selectedFlowInput = inPoint;
+
+			TryEstablishFlowConnection();
+		}
+
+		private void OnClickFlowOutput (FlowNodeOutputKnob outPoint)
+		{
+			selectedFlowOutput = outPoint;
+
+			TryEstablishFlowConnection();
+		}
+
+		void TryEstablishFlowConnection ()
+		{
+			if (selectedFlowInput != null && selectedFlowOutput != null)
 			{
-				if (selectedOutPoint.node != selectedInPoint.node)
-				{
-					CreateConnection();
-					ClearConnectionSelection();
-				}
-				else
-				{
-					ClearConnectionSelection();
-				}
+				if (selectedFlowInput.node != selectedFlowOutput.node)
+					(selectedFlowOutput.node as FlowNode).ConnectFlow(selectedFlowInput.node as FlowNode);
+
+				ClearFlowConnectionSelection();
 			}
 		}
 
-		private void OnClickOutPoint (NodeOutput outPoint)
+		void ClearFlowConnectionSelection ()
 		{
-			selectedOutPoint = outPoint;
+			selectedFlowInput = null;
+			selectedFlowOutput = null;
+		}
 
-			if (selectedInPoint != null)
+		//--------------------------
+		// Data Connections
+		//--------------------------
+
+		private void OnClickDataNodeInput (NodeInput inPoint)
+		{
+			selectedNodeInput = inPoint;
+
+			TryEstablishDataConnection();
+		}
+
+		private void OnClickDataNodeOutput (NodeOutput outPoint)
+		{
+			selectedNodeOutput = outPoint;
+
+			TryEstablishDataConnection();
+		}
+
+		private void TryEstablishDataConnection ()
+		{
+			if (selectedNodeInput != null && selectedNodeOutput != null)
 			{
-				if (selectedOutPoint.node != selectedInPoint.node)
-				{
-					CreateConnection();
-					ClearConnectionSelection();
-				}
-				else
-				{
-					ClearConnectionSelection();
-				}
+				if (selectedNodeOutput.node != selectedNodeInput.node)
+					selectedNodeInput.Connect(selectedNodeOutput);
+
+				ClearConnectionSelection();
 			}
 		}
-
-		private void CreateConnection ()
-		{
-			selectedInPoint.Connect(selectedOutPoint);
-		}
-
+		
 		private void ClearConnectionSelection ()
 		{
-			selectedInPoint = null;
-			selectedOutPoint = null;
+			selectedNodeInput = null;
+			selectedNodeOutput = null;
 		}
 
 		private void OnClickRemoveNode (Node node)
 		{
-			node.Disconnect();
+			node.DisconnectAll();
 			nodes.Remove(node);
 		}
 
@@ -211,12 +244,12 @@ namespace Doodads.Editor
 
 		private void DrawConnectionLine (Event e)
 		{
-			if (selectedInPoint != null && selectedOutPoint == null)
+			if (selectedNodeInput != null && selectedNodeOutput == null)
 			{
 				Handles.DrawBezier(
-					selectedInPoint.node.rect.position + selectedInPoint.rect.center,
+					selectedNodeInput.node.rect.position + selectedNodeInput.rect.center,
 					e.mousePosition,
-					selectedInPoint.node.rect.position + selectedInPoint.rect.center + Vector2.left * 50f,
+					selectedNodeInput.node.rect.position + selectedNodeInput.rect.center + Vector2.left * 50f,
 					e.mousePosition - Vector2.left * 50f,
 					Color.white,
 					null,
@@ -226,12 +259,42 @@ namespace Doodads.Editor
 				GUI.changed = true;
 			}
 
-			if (selectedOutPoint != null && selectedInPoint == null)
+			if (selectedNodeOutput != null && selectedNodeInput == null)
 			{
 				Handles.DrawBezier(
-					selectedOutPoint.node.rect.position + selectedOutPoint.rect.center,
+					selectedNodeOutput.node.rect.position + selectedNodeOutput.rect.center,
 					e.mousePosition,
-					selectedOutPoint.node.rect.position + selectedOutPoint.rect.center - Vector2.left * 50f,
+					selectedNodeOutput.node.rect.position + selectedNodeOutput.rect.center - Vector2.left * 50f,
+					e.mousePosition + Vector2.left * 50f,
+					Color.white,
+					null,
+					2f
+				);
+
+				GUI.changed = true;
+			}
+
+			if (selectedFlowInput != null && selectedFlowOutput == null)
+			{
+				Handles.DrawBezier(
+					selectedFlowInput.node.rect.position + selectedFlowInput.rect.center,
+					e.mousePosition,
+					selectedFlowInput.node.rect.position + selectedFlowInput.rect.center + Vector2.left * 50f,
+					e.mousePosition - Vector2.left * 50f,
+					Color.white,
+					null,
+					2f
+				);
+
+				GUI.changed = true;
+			}
+
+			if (selectedFlowInput == null && selectedFlowOutput != null)
+			{
+				Handles.DrawBezier(
+					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center,
+					e.mousePosition,
+					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center - Vector2.left * 50f,
 					e.mousePosition + Vector2.left * 50f,
 					Color.white,
 					null,

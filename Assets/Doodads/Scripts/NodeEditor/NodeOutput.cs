@@ -43,7 +43,7 @@ namespace Doodads.Editor
 			connectedInputs.Add(nodeInput);
 		}
 
-		override public void Disconnect ()
+		public void Disconnect ()
 		{
 			foreach (var nodeInput in connectedInputs)
 				nodeInput.Disconnect();
