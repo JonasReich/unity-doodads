@@ -30,7 +30,7 @@ namespace Doodads.Editor
 			rect = new Rect(0, 0, 10f, 20f);
 		}
 
-		abstract public void OnGUI ();
+		abstract public void Draw ();
 		abstract public void Disconnect ();
 	}
 }

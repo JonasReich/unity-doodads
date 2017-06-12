@@ -68,7 +68,7 @@ namespace Doodads.Editor
 			{
 				for (int i = 0; i < nodes.Count; i++)
 				{
-					nodes[i].rect = GUILayout.Window(i, nodes[i].rect, nodes[i].OnGUI, nodes[i].name);
+					nodes[i].rect = GUILayout.Window(i, nodes[i].rect, nodes[i].Draw, nodes[i].name);
 					//GUI.Box(nodes[i].rect, nodes[i].name, nodes[i].style);
 				}
 			}

@@ -38,19 +38,19 @@ namespace Doodads.Editor
 			rect.position += delta;
 		}
 
-		public void OnGUI (int id)
+		public void Draw (int id)
 		{
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.BeginVertical();
 
 			foreach (var input in inputs)
-				input.OnGUI();
+				input.Draw();
 
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.BeginVertical();
 
 			foreach (var output in outputs)
-				output.OnGUI();
+				output.Draw();
 
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();

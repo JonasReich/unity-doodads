@@ -24,11 +24,10 @@ namespace Doodads.Editor
 			name = "Output";
 		}
 
-		public override void OnGUI ()
+		public override void Draw ()
 		{
 			EditorGUILayout.BeginHorizontal();
-			//GUILayout.Label(name);
-			OnGUILabel();
+			DrawLabel();
 			GUILayout.FlexibleSpace();
 			rect = GUILayoutUtility.GetRect(15, 15);
 			if (GUI.Button(rect, ""))
@@ -37,7 +36,7 @@ namespace Doodads.Editor
 			EditorGUILayout.EndHorizontal();
 		}
 
-		abstract protected void OnGUILabel ();
+		abstract protected void DrawLabel ();
 
 		public void Connect(NodeInput nodeInput)
 		{
@@ -64,7 +63,7 @@ namespace Doodads.Editor
 		{
 		}
 
-		protected override void OnGUILabel ()
+		protected override void DrawLabel ()
 		{
 			GUILayout.Label(name);
 		}
