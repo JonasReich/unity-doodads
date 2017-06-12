@@ -49,15 +49,7 @@ namespace Doodads.Editor
 			if (connectedOutput == null)
 				return;
 
-			Handles.DrawBezier(
-				node.rect.position + rect.center,
-				connectedOutput.node.rect.position + connectedOutput.rect.center,
-				node.rect.position + rect.center + Vector2.left * 50f,
-				connectedOutput.node.rect.position + connectedOutput.rect.center - Vector2.left * 50f,
-				Color.white,
-				null,
-				2f
-			);
+			NodeEditorUtility.DrawConnection(connectedOutput, this);
 		}
 
 		public void Disconnect ()

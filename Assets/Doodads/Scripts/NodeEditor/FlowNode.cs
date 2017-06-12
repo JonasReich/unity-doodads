@@ -51,15 +51,7 @@ namespace Doodads.Editor
 			if (connectedFlowNode == null)
 				return;
 
-			Handles.DrawBezier(
-				rect.position + flowOutput.rect.center,
-				connectedFlowNode.rect.position + connectedFlowNode.flowInput.rect.center,
-				rect.position + flowOutput.rect.center + Vector2.right * 50f,
-				connectedFlowNode.rect.position + connectedFlowNode.flowInput.rect.center - Vector2.right * 50f,
-				Color.white,
-				null,
-				2f
-			);
+			NodeEditorUtility.DrawConnection(flowOutput, connectedFlowNode.flowInput);
 		}
 
 		public void ConnectFlow (FlowNode node)

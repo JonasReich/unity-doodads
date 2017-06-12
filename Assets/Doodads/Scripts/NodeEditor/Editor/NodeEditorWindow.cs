@@ -15,6 +15,9 @@ namespace Doodads.Editor
 	/// </summary>
 	public class NodeEditorWindow : EditorWindow
 	{
+		public static Texture2D AALineTexture;
+
+
 		private List<Node> nodes;
 
 		private GUIStyle nodeStyle;
@@ -31,6 +34,9 @@ namespace Doodads.Editor
 		[MenuItem("Tools/Node Editor")]
 		private static void OpenWindow ()
 		{
+			AALineTexture = Resources.Load<Texture2D>("AALine");
+
+
 			NodeEditorWindow window = GetWindow<NodeEditorWindow>();
 			window.titleContent = new GUIContent("Node Editor");
 		}
@@ -244,73 +250,21 @@ namespace Doodads.Editor
 
 		private void DrawConnectionLine (Event e)
 		{
-			// --------------
 			// Data Nodes
-			// --------------
 
 			if (selectedNodeInput != null && selectedNodeOutput == null)
-			{
-				Handles.DrawBezier(
-					selectedNodeInput.node.rect.position + selectedNodeInput.rect.center,
-					e.mousePosition,
-					selectedNodeInput.node.rect.position + selectedNodeInput.rect.center + Vector2.left * 50f,
-					e.mousePosition - Vector2.left * 50f,
-					Color.white,
-					null,
-					2f
-				);
-
-				GUI.changed = true;
-			}
+				NodeEditorUtility.DrawInputConnection(selectedNodeInput, e);
 
 			if (selectedFlowOutput != null && selectedNodeInput == null)
-			{
-				Handles.DrawBezier(
-					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center,
-					e.mousePosition,
-					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center - Vector2.left * 50f,
-					e.mousePosition + Vector2.left * 50f,
-					Color.white,
-					null,
-					2f
-				);
-
-				GUI.changed = true;
-			}
-
-			// --------------
+				NodeEditorUtility.DrawOutputConnection(selectedFlowOutput, e);
+			
 			// Flow Nodes
-			// --------------
 
 			if (selectedFlowInput != null && selectedFlowOutput == null)
-			{
-				Handles.DrawBezier(
-					selectedFlowInput.node.rect.position + selectedFlowInput.rect.center,
-					e.mousePosition,
-					selectedFlowInput.node.rect.position + selectedFlowInput.rect.center + Vector2.left * 50f,
-					e.mousePosition - Vector2.left * 50f,
-					Color.white,
-					null,
-					2f
-				);
-
-				GUI.changed = true;
-			}
+				NodeEditorUtility.DrawInputConnection(selectedFlowInput, e);
 
 			if (selectedFlowOutput != null && selectedFlowInput == null)
-			{
-				Handles.DrawBezier(
-					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center,
-					e.mousePosition,
-					selectedFlowOutput.node.rect.position + selectedFlowOutput.rect.center - Vector2.left * 50f,
-					e.mousePosition + Vector2.left * 50f,
-					Color.white,
-					null,
-					2f
-				);
-
-				GUI.changed = true;
-			}
+				NodeEditorUtility.DrawOutputConnection(selectedFlowOutput, e);
 		}
 
 		private void DrawGrid (float gridSpacing, float gridOpacity, Color gridColor)
