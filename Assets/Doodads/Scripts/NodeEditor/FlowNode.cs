@@ -23,8 +23,8 @@ namespace Doodads.Editor
 			Action<Node> OnClickRemoveNode, Action<FlowNodeInputKnob> OnClickFlowInput, Action<FlowNodeOutputKnob> OnClickFlowOutput) 
 			: base(position, width, height, OnClickRemoveNode)
 		{
-			flowInput = new FlowNodeInputKnob(this, typeof(FlowNode), OnClickFlowInput);
-			flowOutput = new FlowNodeOutputKnob(this, typeof(FlowNode), OnClickFlowOutput);
+			flowInput = new FlowNodeInputKnob(this, NodeKnob.Type.Flow, OnClickFlowInput);
+			flowOutput = new FlowNodeOutputKnob(this, NodeKnob.Type.Flow, OnClickFlowOutput);
 		}
 
 		public override void Draw (int id)

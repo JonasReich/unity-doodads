@@ -20,8 +20,8 @@ namespace Doodads.Editor
 			: base(position, width, height, OnClickRemoveNode)
 		{
 			name = "Float Node";
-			inputs.Add(new FloatInput(this, typeof(float), OnClickInput));
-			outputs.Add(new FloatOutput(this, typeof(float), OnClickOutput));
+			inputs.Add(new FloatInput(this, NodeKnob.Type.Number, OnClickInput));
+			outputs.Add(new FloatOutput(this, NodeKnob.Type.Number, OnClickOutput));
 		}
 	}
 }

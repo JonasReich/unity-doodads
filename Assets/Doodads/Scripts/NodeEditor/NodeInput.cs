@@ -28,9 +28,12 @@ namespace Doodads.Editor
 		{
 			EditorGUILayout.BeginHorizontal();
 			rect = GUILayoutUtility.GetRect(15, 15);
+			var color = GUI.color;
+			GUI.color = TypeToColor(type);
 			if (GUI.Button(rect, ""))
 				if (OnClickKnob != null)
 					OnClickKnob(this);
+			GUI.color = color;
 			GUILayout.FlexibleSpace();
 			DrawLabel();
 			EditorGUILayout.EndHorizontal();

@@ -21,9 +21,9 @@ namespace Doodads.Editor
 				outputKnob.node.rect.position + outputKnob.rect.center,
 				inputKnob.node.rect.position + inputKnob.rect.center + Vector2.left * 50f,
 				outputKnob.node.rect.position + outputKnob.rect.center + Vector2.right * 50f,
-				Color.white,
+				NodeKnob.TypeToColor(outputKnob.type),
 				null,
-				2f
+				4f
 			);
 
 			GUI.changed = true;
@@ -36,9 +36,9 @@ namespace Doodads.Editor
 					e.mousePosition,
 					inputKnob.node.rect.position + inputKnob.rect.center + Vector2.left * 50f,
 					e.mousePosition + Vector2.right * 50f,
-					Color.white,
+					NodeKnob.TypeToColor(inputKnob.type),
 					null,
-					2f
+					4f
 				);
 
 			GUI.changed = true;
@@ -51,9 +51,9 @@ namespace Doodads.Editor
 					e.mousePosition,
 					outputKnob.node.rect.position + outputKnob.rect.center + Vector2.right * 50f,
 					e.mousePosition + Vector2.left * 50f,
-					Color.white,
+					NodeKnob.TypeToColor(outputKnob.type),
 					null,
-					2f
+					4f
 				);
 
 			GUI.changed = true;

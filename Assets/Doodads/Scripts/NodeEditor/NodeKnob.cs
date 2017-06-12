@@ -31,5 +31,42 @@ namespace Doodads.Editor
 		}
 
 		abstract public void Draw ();
+
+		public enum Type
+		{
+			Flow,
+			Number,
+			String,
+			Color,
+			Vector,
+			GameObject,
+			MonoBehaviour,
+
+		}
+
+		public static Color TypeToColor(Type t)
+		{
+			switch (t)
+			{
+				case Type.Flow:
+					return Color.white;
+				case Type.Number:
+					return Color.green;
+				case Type.String:
+					return Color.red;
+				case Type.Color:
+					return Color.magenta;
+				case Type.Vector:
+					return Color.yellow;
+				case Type.GameObject:
+					return Color.blue;
+				case Type.MonoBehaviour:
+					return Color.cyan;
+				default:
+					break;
+			}
+
+			return Color.black;
+		}
 	}
 }
