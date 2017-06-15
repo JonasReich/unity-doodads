@@ -163,15 +163,18 @@ namespace Doodads.Editor
 
 		private void OnClickFlowInput (FlowNodeInputKnob inPoint)
 		{
-			selectedFlowInput = inPoint;
+			ClearConnectionSelection();
 
+			selectedFlowInput = inPoint;
 			TryEstablishFlowConnection();
 		}
 
 		private void OnClickFlowOutput (FlowNodeOutputKnob outPoint)
 		{
-			selectedFlowOutput = outPoint;
+			(outPoint.node as FlowNode).DisconnectFlow();
+			ClearConnectionSelection();
 
+			selectedFlowOutput = outPoint;
 			TryEstablishFlowConnection();
 		}
 
@@ -198,15 +201,18 @@ namespace Doodads.Editor
 
 		private void OnClickDataNodeInput (NodeInput inPoint)
 		{
-			selectedNodeInput = inPoint;
+			inPoint.Disconnect();
+			ClearFlowConnectionSelection();
 
+			selectedNodeInput = inPoint;
 			TryEstablishDataConnection();
 		}
 
 		private void OnClickDataNodeOutput (NodeOutput outPoint)
 		{
-			selectedNodeOutput = outPoint;
+			ClearFlowConnectionSelection();
 
+			selectedNodeOutput = outPoint;
 			TryEstablishDataConnection();
 		}
 
@@ -236,7 +242,7 @@ namespace Doodads.Editor
 		private void OnDrag (Vector2 delta)
 		{
 			drag = delta;
-
+			
 			if (nodes != null)
 			{
 				for (int i = 0; i < nodes.Count; i++)
@@ -255,8 +261,8 @@ namespace Doodads.Editor
 			if (selectedNodeInput != null && selectedNodeOutput == null)
 				NodeEditorUtility.DrawInputConnection(selectedNodeInput, e);
 
-			if (selectedFlowOutput != null && selectedNodeInput == null)
-				NodeEditorUtility.DrawOutputConnection(selectedFlowOutput, e);
+			if (selectedNodeOutput != null && selectedNodeInput == null)
+				NodeEditorUtility.DrawOutputConnection(selectedNodeOutput, e);
 			
 			// Flow Nodes
 

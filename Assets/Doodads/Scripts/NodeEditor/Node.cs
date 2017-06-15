@@ -25,12 +25,12 @@ namespace Doodads.Editor
 
 		public GUIStyle style;
 
-		public Action<Node> OnRemoveNode;
+		public Action<Node> NodeRemovedCallback;
 
 		public Node (Vector2 position, float width, float height, Action<Node> OnClickRemoveNode)
 		{
 			rect = new Rect(position.x, position.y, width, height);
-			OnRemoveNode = OnClickRemoveNode;
+			NodeRemovedCallback = OnClickRemoveNode;
 		}
 
 		public void Drag (Vector2 delta)
@@ -122,9 +122,9 @@ namespace Doodads.Editor
 
 		private void OnClickRemoveNode ()
 		{
-			if (OnRemoveNode != null)
+			if (NodeRemovedCallback != null)
 			{
-				OnRemoveNode(this);
+				NodeRemovedCallback(this);
 			}
 		}
 

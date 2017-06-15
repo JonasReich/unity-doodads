@@ -49,7 +49,9 @@ namespace Doodads.Editor
 		public void Disconnect ()
 		{
 			foreach (var nodeInput in connectedInputs)
-				nodeInput.Disconnect();
+			{
+				Disconnect(nodeInput);
+			}
 		}
 
 		internal void Disconnect (NodeInput nodeInput)
