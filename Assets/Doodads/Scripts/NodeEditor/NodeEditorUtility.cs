@@ -12,9 +12,16 @@ namespace Doodads.Editor
 	/// <summary>
 	/// 
 	/// </summary>
-	public class NodeEditorUtility
+	public static class NodeEditorUtility
 	{
-		public static void DrawConnection(NodeKnob outputKnob, NodeKnob inputKnob)
+		public static Texture2D AALineTexture;
+
+		public static void Initialize()
+		{
+			AALineTexture = Resources.Load<Texture2D>("AALine");
+		}
+
+		public static void DrawConnection (NodeKnob outputKnob, NodeKnob inputKnob)
 		{
 			Handles.DrawBezier(
 				inputKnob.node.rect.position + inputKnob.rect.center,
@@ -22,7 +29,7 @@ namespace Doodads.Editor
 				inputKnob.node.rect.position + inputKnob.rect.center + Vector2.left * 50f,
 				outputKnob.node.rect.position + outputKnob.rect.center + Vector2.right * 50f,
 				NodeKnob.TypeToColor(outputKnob.type),
-				null,
+				AALineTexture,
 				4f
 			);
 
@@ -32,14 +39,14 @@ namespace Doodads.Editor
 		public static void DrawInputConnection (NodeKnob inputKnob, Event e)
 		{
 			Handles.DrawBezier(
-					inputKnob.node.rect.position + inputKnob.rect.center,
-					e.mousePosition,
-					inputKnob.node.rect.position + inputKnob.rect.center + Vector2.left * 50f,
-					e.mousePosition + Vector2.right * 50f,
-					NodeKnob.TypeToColor(inputKnob.type),
-					null,
-					4f
-				);
+				inputKnob.node.rect.position + inputKnob.rect.center,
+				e.mousePosition,
+				inputKnob.node.rect.position + inputKnob.rect.center + Vector2.left * 50f,
+				e.mousePosition + Vector2.right * 50f,
+				NodeKnob.TypeToColor(inputKnob.type),
+				AALineTexture,
+				4f
+			);
 
 			GUI.changed = true;
 		}
@@ -47,14 +54,14 @@ namespace Doodads.Editor
 		public static void DrawOutputConnection (NodeKnob outputKnob, Event e)
 		{
 			Handles.DrawBezier(
-					outputKnob.node.rect.position + outputKnob.rect.center,
-					e.mousePosition,
-					outputKnob.node.rect.position + outputKnob.rect.center + Vector2.right * 50f,
-					e.mousePosition + Vector2.left * 50f,
-					NodeKnob.TypeToColor(outputKnob.type),
-					null,
-					4f
-				);
+				outputKnob.node.rect.position + outputKnob.rect.center,
+				e.mousePosition,
+				outputKnob.node.rect.position + outputKnob.rect.center + Vector2.right * 50f,
+				e.mousePosition + Vector2.left * 50f,
+				NodeKnob.TypeToColor(outputKnob.type),
+				AALineTexture,
+				4f
+			);
 
 			GUI.changed = true;
 		}

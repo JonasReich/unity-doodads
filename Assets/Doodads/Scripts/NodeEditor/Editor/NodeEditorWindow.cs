@@ -15,13 +15,7 @@ namespace Doodads.Editor
 	/// </summary>
 	public class NodeEditorWindow : EditorWindow
 	{
-		public static Texture2D AALineTexture;
-
-
 		private List<Node> nodes;
-
-		private GUIStyle nodeStyle;
-		private GUIStyle selectedNodeStyle;
 
 		private NodeInput selectedNodeInput;
 		private NodeOutput selectedNodeOutput;
@@ -34,22 +28,13 @@ namespace Doodads.Editor
 		[MenuItem("Tools/Node Editor")]
 		private static void OpenWindow ()
 		{
-			AALineTexture = Resources.Load<Texture2D>("AALine");
-
-
 			NodeEditorWindow window = GetWindow<NodeEditorWindow>();
 			window.titleContent = new GUIContent("Node Editor");
 		}
 
 		private void OnEnable ()
 		{
-			nodeStyle = new GUIStyle();
-			nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
-			nodeStyle.border = new RectOffset(12, 12, 12, 12);
-
-			selectedNodeStyle = new GUIStyle();
-			selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-			selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
+			NodeEditorUtility.Initialize();
 		}
 
 		private void OnGUI ()
