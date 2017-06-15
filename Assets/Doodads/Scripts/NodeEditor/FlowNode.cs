@@ -62,7 +62,8 @@ namespace Doodads.Editor
 
 		public void DisconnectFlow ()
 		{
-			connectedFlowNode.NodeRemovedCallback -= OnRemoveConnectedFlowNode;
+			if(connectedFlowNode != null)
+				connectedFlowNode.NodeRemovedCallback -= OnRemoveConnectedFlowNode;
 			connectedFlowNode = null;
 		}
 
