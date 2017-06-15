@@ -4,16 +4,14 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Doodads
 {
 	/// <summary>
-	///
+	/// Generic implementation of IGrid using a one-dimensional array
 	/// </summary>
 	[System.Serializable]
-
 	public class Grid<T> : IGrid<T>
 	{
 		[SerializeField, HideInInspector]
@@ -163,7 +161,7 @@ namespace Doodads
 		}
 
 		//--------------------------------------
-		// Modify
+		// Modify Content
 		//--------------------------------------
 
 		public void Remove (T t)
