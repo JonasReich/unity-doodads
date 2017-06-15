@@ -57,12 +57,12 @@ namespace Doodads.Editor
 		public void ConnectFlow (FlowNode node)
 		{
 			connectedFlowNode = node;
-			node.OnRemoveNode += OnRemoveConnectedFlowNode;
+			node.NodeRemovedCallback += OnRemoveConnectedFlowNode;
 		}
 
 		public void DisconnectFlow ()
 		{
-			connectedFlowNode.OnRemoveNode -= OnRemoveConnectedFlowNode;
+			connectedFlowNode.NodeRemovedCallback -= OnRemoveConnectedFlowNode;
 			connectedFlowNode = null;
 		}
 
