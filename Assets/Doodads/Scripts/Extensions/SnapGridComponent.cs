@@ -2,9 +2,6 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -81,40 +78,24 @@ namespace Doodads.Editor
 		
 		public void Save ()
 		{
-			var sw = File.CreateText("gridprefs");
-			sw.WriteLine(show);
-			sw.WriteLine(showX);
-			sw.WriteLine(showY);
-			sw.WriteLine(showZ);
-			sw.WriteLine(autoSnap);
-			sw.Close();
+			EditorPrefs.SetBool("ShowSnapGrid", show);
+
+			EditorPrefs.SetBool("ShowSnapGridX", showX);
+			EditorPrefs.SetBool("ShowSnapGridY", showY);
+			EditorPrefs.SetBool("ShowSnapGridZ", showZ);
+
+			EditorPrefs.SetBool("AutoSnap", autoSnap);
 		}
 
 		void Load ()
 		{
-			if (File.Exists("gridprefs"))
-			{
-				var sr = File.OpenText("gridprefs");
-				/*
-				var line = sr.ReadLine();
-				while (line != null)
-				{
-					Debug.Log(line); // prints each line of the file
-					line = sr.ReadLine();
-				}
-				*/
-				bool.TryParse(sr.ReadLine(), out show);
-				bool.TryParse(sr.ReadLine(), out showX);
-				bool.TryParse(sr.ReadLine(), out showY);
-				bool.TryParse(sr.ReadLine(), out showZ);
-				bool.TryParse(sr.ReadLine(), out autoSnap);
-				sr.Close();
-			}
-			else
-			{
-				Debug.Log("Could not Open the file: " + "testfile.txt" + " for reading.");
-				return;
-			}
+			show = EditorPrefs.GetBool("ShowSnapGrid");
+
+			showX = EditorPrefs.GetBool("ShowSnapGridX");
+			showY = EditorPrefs.GetBool("ShowSnapGridY");
+			showZ = EditorPrefs.GetBool("ShowSnapGridZ");
+
+			autoSnap = EditorPrefs.GetBool("AutoSnap");
 		}
 
 		void LoadMaterial ()
@@ -167,15 +148,6 @@ namespace Doodads.Editor
 					DrawLines(z_plane_10, blue);
 				}
 			}
-
-			/*
-			GL.Begin(GL.LINES);
-			lineMat.SetPass(0);
-			GL.Color(new Color(0f, 0f, 0f, 1f));
-			GL.Vertex3(0f, 0f, 0f);
-			GL.Vertex3(1f, 1f, 1f);
-			GL.End();
-			*/
 		}
 
 		void DrawLines (Vector3[] points, Color color)
