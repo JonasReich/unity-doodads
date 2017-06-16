@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -9,7 +9,7 @@ namespace Doodads.Examples
 	/// <summary>
 	/// A scrollable UI list of adressbook contacts
 	/// </summary>
-	public class ScrolledContactList : ScrolledList<Contact>
+	public class ScrollableContactList : ScrollableList<Contact>
 	{
 
 	}
