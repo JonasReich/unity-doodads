@@ -2,13 +2,13 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Doodads
 {
+	/// <summary>
+	/// Generic Grid that instantiates prefab copies on construction
+	/// </summary>
 	[System.Serializable]
 	public class ComponentGrid<T> : Grid<T> where T : Component
 	{
@@ -32,7 +32,7 @@ namespace Doodads
 			{
 				for (int x = 0; x < Width; x++)
 				{
-					T tNew = GameObject.Instantiate<T>(prefab, new Vector3(x,y), root.rotation);
+					T tNew = GameObject.Instantiate<T>(prefab, root.position + new Vector3(x,y), root.rotation);
 
 					tNew.name = y.ToString() + " " + x.ToString();
 					this[x, y] = tNew;

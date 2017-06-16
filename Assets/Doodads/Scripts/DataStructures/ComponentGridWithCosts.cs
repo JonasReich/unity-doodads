@@ -3,15 +3,12 @@
 //-------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Doodads
 {
 	/// <summary>
-	///
+	/// ComponentGrid that stores entry cost information of all tiles
 	/// </summary>
 	[Serializable]
 	public class ComponentGridWithCosts<T> : ComponentGrid<T>, IGridWithCosts<T> where T : Component, IGridTileWithEntryCosts
