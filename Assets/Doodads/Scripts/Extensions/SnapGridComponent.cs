@@ -1,4 +1,4 @@
-﻿//-------------------------------------------
+//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -34,16 +34,18 @@ namespace Doodads.Editor
 		public bool showX = true, showY = true, showZ = true;
 		public bool autoSnap = false;
 
-
 		Material material;
 
 		private void OnEnable ()
 		{
+			Load();
 			EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
 		}
 
 		private void OnDisable ()
 		{
+
+			Save();
 			EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 		}
 
@@ -78,24 +80,20 @@ namespace Doodads.Editor
 		
 		public void Save ()
 		{
-			EditorPrefs.SetBool("ShowSnapGrid", show);
-
-			EditorPrefs.SetBool("ShowSnapGridX", showX);
-			EditorPrefs.SetBool("ShowSnapGridY", showY);
-			EditorPrefs.SetBool("ShowSnapGridZ", showZ);
-
-			EditorPrefs.SetBool("AutoSnap", autoSnap);
+			EditorPrefs.SetBool("SnapGrid_Show", show);
+			EditorPrefs.SetBool("SnapGrid_ShowX", showX);
+			EditorPrefs.SetBool("SnapGrid_ShowY", showY);
+			EditorPrefs.SetBool("SnapGrid_ShowZ", showZ);
+			EditorPrefs.SetBool("SnapGrid_AutoSnap", autoSnap);
 		}
 
 		void Load ()
 		{
-			show = EditorPrefs.GetBool("ShowSnapGrid");
-
-			showX = EditorPrefs.GetBool("ShowSnapGridX");
-			showY = EditorPrefs.GetBool("ShowSnapGridY");
-			showZ = EditorPrefs.GetBool("ShowSnapGridZ");
-
-			autoSnap = EditorPrefs.GetBool("AutoSnap");
+			show = EditorPrefs.GetBool("SnapGrid_Show");
+			showX = EditorPrefs.GetBool("SnapGrid_ShowX");
+			showY = EditorPrefs.GetBool("SnapGrid_ShowY");
+			showZ = EditorPrefs.GetBool("SnapGrid_ShowZ");
+			autoSnap = EditorPrefs.GetBool("SnapGrid_AutoSnap");
 		}
 
 		void LoadMaterial ()
@@ -111,7 +109,7 @@ namespace Doodads.Editor
 			//-------------------------------------
 			// Info
 			//-------------------------------------
-
+			
 			// call only if something has changed
 			if (x_plane == null || y_plane == null || z_plane == null ||
 				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null ||
@@ -295,12 +293,17 @@ namespace Doodads.Editor
 
 			foreach (Transform t in Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable))
 			{
-				t.position = new Vector3(
-					Mathf.Round(t.position.x / scaleX) * scaleX,
-					Mathf.Round(t.position.y / scaleY) * scaleY,
-					Mathf.Round(t.position.z / scaleZ) * scaleZ
-				);
+				t.position = Snap(t.position);
 			}
+		}
+
+		public Vector3 Snap(Vector3 position)
+		{
+			return new Vector3(
+					Mathf.Round(position.x / scaleX) * scaleX,
+					Mathf.Round(position.y / scaleY) * scaleY,
+					Mathf.Round(position.z / scaleZ) * scaleZ
+				);
 		}
 
 
