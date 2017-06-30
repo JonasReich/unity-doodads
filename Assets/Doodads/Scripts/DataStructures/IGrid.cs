@@ -3,11 +3,12 @@
 //-------------------------------------------
 
 using System.Collections.Generic;
-using Doodads;
-using UnityEngine;
 
 namespace Doodads
 {
+	/// <summary>
+	/// 2D grid structure
+	/// </summary>
 	public interface IGrid<T> : IEnumerable<T>
 	{
 		int Width { get; }
@@ -35,6 +36,9 @@ namespace Doodads
 		void Clear();
 	}
 
+	/// <summary>
+	/// 2D grid structure that allows cost lookup
+	/// </summary>
 	public interface IGridWithCosts<T> : IGrid<T>
 	{
 		int GetCosts(XY A, XY B);

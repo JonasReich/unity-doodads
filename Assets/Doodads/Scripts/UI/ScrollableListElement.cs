@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Doodads.UI
 {
-	public abstract class ScrolledListElement<T> : MonoBehaviour
+	public abstract class ScrollableListElement<T> : MonoBehaviour
 	{
 		public T DataCache { get; protected set; }
 

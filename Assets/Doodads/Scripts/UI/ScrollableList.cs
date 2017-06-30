@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace Doodads.UI
 {
-	public class ScrolledList<TDataType> : MonoBehaviour
+	public class ScrollableList<TDataType> : MonoBehaviour
 	{
-		ScrolledListElement<TDataType> listElementPrefab;
+		ScrollableListElement<TDataType> listElementPrefab;
 		public RectTransform containerTransform;
 
 		List<GameObject> children = new List<GameObject>();
@@ -17,7 +17,7 @@ namespace Doodads.UI
 
 		void Awake()
 		{
-			listElementPrefab = GetComponentInChildren<ScrolledListElement<TDataType>>();
+			listElementPrefab = GetComponentInChildren<ScrollableListElement<TDataType>>();
 			listElementPrefab.gameObject.SetActive(false);
 		}
 
@@ -61,7 +61,7 @@ namespace Doodads.UI
 		{
 			var button = Instantiate(listElementPrefab.gameObject);
 			button.SetActive(true);
-			var elemScript = button.GetComponent<ScrolledListElement<TDataType>>();
+			var elemScript = button.GetComponent<ScrollableListElement<TDataType>>();
 			elemScript.SetData(element, containerTransform);
 			children.Add(button);
 		}

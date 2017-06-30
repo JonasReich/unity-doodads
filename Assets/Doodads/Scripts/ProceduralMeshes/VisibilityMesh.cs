@@ -40,6 +40,17 @@ namespace Doodads
 		public Transform eyeTransform;
 
 		/// <summary>
+		/// Maximum view distance.
+		/// In case there are no obstacles, the field of vision should be a perfect circle with visionRange as radius.
+		/// </summary>
+		public float visionRange = 10f;
+
+		/// <summary>
+		/// The amount of rays cast independently of the obstacles
+		/// </summary>
+		public int circleRayCount = 360;
+
+		/// <summary>
 		/// All layers that contain 2D colliders which should be respected by the mesh generation algorithm
 		/// </summary>
 		public LayerMask visionBlockingLayers;
@@ -54,7 +65,8 @@ namespace Doodads
 		List<Vector3> vertices = new List<Vector3>();
 		Mesh mesh;
 		MeshFilter meshFilter;
-		
+		Vector2 targetPosition;
+
 
 		void Awake ()
 		{
@@ -109,14 +121,14 @@ namespace Doodads
 				Gizmos.DrawSphere(vertices[i], 0.1f);
 		}
 
-		
+
 		/// <summary>
 		/// Compare two vector3 positions depending on angle to transform. Used to implement IComparer<Vector3> for Vector sorting
 		/// </summary>
 		public int Compare (Vector3 A, Vector3 B)
 		{
-			double angleA = Math.Atan2(A.y - (eyeTransform.position).y, A.x - (eyeTransform.position).x);
-			double angleB = Math.Atan2(B.y - (eyeTransform.position).y, B.x - (eyeTransform.position).x);
+			double angleB = Math.Atan2(B.y - targetPosition.y, B.x - targetPosition.x);
+			double angleA = Math.Atan2(A.y - targetPosition.y, A.x - targetPosition.x);
 
 			if (angleA == angleB)
 				return 0;
@@ -167,38 +179,65 @@ namespace Doodads
 
 		void GenerateMesh ()
 		{
-			Vector2 targetPosition = eyeTransform.position;
+			targetPosition = eyeTransform.position;
+
 
 			// Sort uniqueEndpoints depending on angle
-			colliderEndpoints.Sort(this);
+			//directions.Sort(this);
 
 			vertices.Clear();
 
+			// ------------------
+			// Vertices from collider endpoints
+			// ------------------
+
 			for (int i = 0; i < colliderEndpoints.Count; i++)
 			{
-				var direction = (Vector2)colliderEndpoints[i] - targetPosition;
+				var direction = ((Vector2)colliderEndpoints[i] - targetPosition).normalized;
 
-				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction);
+				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction, visionRange);
 				if (hit)
 				{
 					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
+				else
+					vertices.Add(targetPosition + direction * visionRange);
 
-				hit = Physics2D.Raycast(targetPosition, direction);
+				hit = Physics2D.Raycast(targetPosition, direction, visionRange);
 				if (hit)
 				{
 					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
+				else
+					vertices.Add(targetPosition + direction * visionRange);
 
-				hit = Physics2D.Raycast(targetPosition, smallPositiveRotation * direction);
+				hit = Physics2D.Raycast(targetPosition, smallPositiveRotation * direction, visionRange);
 				if (hit)
 				{
 					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
 					vertices.Add(hit.point);
 				}
+				else
+					vertices.Add(targetPosition + direction * visionRange);
 			}
+
+			for (int i = 0; i < circleRayCount; i++)
+			{
+				float angle = i * 360f / circleRayCount;
+				var direction = (new Vector2(Mathf.Sin(angle), Mathf.Cos(angle))).normalized;
+				var hit = Physics2D.Raycast(targetPosition, smallNegativeRotation * direction, visionRange);
+				if (hit)
+				{
+					Debug.DrawLine((Vector2)targetPosition, hit.point, Color.red);
+					vertices.Add(hit.point);
+				}
+				else
+					vertices.Add(targetPosition + direction * visionRange);
+			}
+
+			vertices.Sort(this);
 
 			vertices.Add(targetPosition);
 
@@ -235,7 +274,17 @@ namespace Doodads
 			mesh.SetVertices(vertices);
 			mesh.triangles = triangles;
 		}
-		
+
+		private List<float> CreateAngleList (List<Vector3> colliderEndpoints)
+		{
+			var list = new List<float>();
+			foreach (var point in colliderEndpoints)
+			{
+				list.Add(Vector2.Angle(transform.position, point));
+			}
+
+			return list;
+		}
 
 		public struct Line
 		{

@@ -2,6 +2,7 @@
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -137,7 +138,7 @@ namespace Doodads.Editor
 		void OnPlaymodeStateChanged ()
 		{
 			if (EditorApplication.isPlayingOrWillChangePlaymode && EditorApplication.isPlaying)
-					Repaint();
+				Repaint();
 		}
 #pragma warning restore 0618
 	}

@@ -4,13 +4,14 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
 
 namespace Doodads
 {
 	// Source: http://www.redblobgames.com/pathfinding/a-star/implementation.html
 
+	/// <summary>
+	/// Generic implementation of a priority queue using a list of KeyValuePairs
+	/// </summary>
 	public class PriorityQueue<T>
 	{
 		// I'm using an unsorted array for this example, but ideally this
@@ -32,7 +33,7 @@ namespace Doodads
 
 		public void Enqueue (T item, int priority)
 		{
-			elements.Add(new KeyValuePair<int, T>( priority, item));
+			elements.Add(new KeyValuePair<int, T>(priority, item));
 		}
 
 		public T Dequeue ()

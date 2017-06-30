@@ -1,4 +1,4 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -8,7 +8,10 @@ using UnityEngine.UI;
 
 namespace Doodads.Examples
 {
-	public class ScrolledContactListElement : ScrolledListElement<Contact>
+	/// <summary>
+	/// The elements stored in the ScrollableContactList
+	/// </summary>
+	public class ScrollableContactListElement : ScrollableListElement<Contact>
 	{
 		public Image pictureImage;
 		public Text nameText;

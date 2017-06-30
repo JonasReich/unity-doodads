@@ -1,10 +1,7 @@
-﻿//-------------------------------------------
+//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,16 +34,18 @@ namespace Doodads.Editor
 		public bool showX = true, showY = true, showZ = true;
 		public bool autoSnap = false;
 
-
 		Material material;
 
 		private void OnEnable ()
 		{
+			Load();
 			EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
 		}
 
 		private void OnDisable ()
 		{
+
+			Save();
 			EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 		}
 
@@ -81,40 +80,20 @@ namespace Doodads.Editor
 		
 		public void Save ()
 		{
-			var sw = File.CreateText("gridprefs");
-			sw.WriteLine(show);
-			sw.WriteLine(showX);
-			sw.WriteLine(showY);
-			sw.WriteLine(showZ);
-			sw.WriteLine(autoSnap);
-			sw.Close();
+			EditorPrefs.SetBool("SnapGrid_Show", show);
+			EditorPrefs.SetBool("SnapGrid_ShowX", showX);
+			EditorPrefs.SetBool("SnapGrid_ShowY", showY);
+			EditorPrefs.SetBool("SnapGrid_ShowZ", showZ);
+			EditorPrefs.SetBool("SnapGrid_AutoSnap", autoSnap);
 		}
 
 		void Load ()
 		{
-			if (File.Exists("gridprefs"))
-			{
-				var sr = File.OpenText("gridprefs");
-				/*
-				var line = sr.ReadLine();
-				while (line != null)
-				{
-					Debug.Log(line); // prints each line of the file
-					line = sr.ReadLine();
-				}
-				*/
-				bool.TryParse(sr.ReadLine(), out show);
-				bool.TryParse(sr.ReadLine(), out showX);
-				bool.TryParse(sr.ReadLine(), out showY);
-				bool.TryParse(sr.ReadLine(), out showZ);
-				bool.TryParse(sr.ReadLine(), out autoSnap);
-				sr.Close();
-			}
-			else
-			{
-				Debug.Log("Could not Open the file: " + "testfile.txt" + " for reading.");
-				return;
-			}
+			show = EditorPrefs.GetBool("SnapGrid_Show");
+			showX = EditorPrefs.GetBool("SnapGrid_ShowX");
+			showY = EditorPrefs.GetBool("SnapGrid_ShowY");
+			showZ = EditorPrefs.GetBool("SnapGrid_ShowZ");
+			autoSnap = EditorPrefs.GetBool("SnapGrid_AutoSnap");
 		}
 
 		void LoadMaterial ()
@@ -130,7 +109,7 @@ namespace Doodads.Editor
 			//-------------------------------------
 			// Info
 			//-------------------------------------
-
+			
 			// call only if something has changed
 			if (x_plane == null || y_plane == null || z_plane == null ||
 				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null ||
@@ -167,15 +146,6 @@ namespace Doodads.Editor
 					DrawLines(z_plane_10, blue);
 				}
 			}
-
-			/*
-			GL.Begin(GL.LINES);
-			lineMat.SetPass(0);
-			GL.Color(new Color(0f, 0f, 0f, 1f));
-			GL.Vertex3(0f, 0f, 0f);
-			GL.Vertex3(1f, 1f, 1f);
-			GL.End();
-			*/
 		}
 
 		void DrawLines (Vector3[] points, Color color)
@@ -323,12 +293,17 @@ namespace Doodads.Editor
 
 			foreach (Transform t in Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable))
 			{
-				t.position = new Vector3(
-					Mathf.Round(t.position.x / scaleX) * scaleX,
-					Mathf.Round(t.position.y / scaleY) * scaleY,
-					Mathf.Round(t.position.z / scaleZ) * scaleZ
-				);
+				t.position = Snap(t.position);
 			}
+		}
+
+		public Vector3 Snap(Vector3 position)
+		{
+			return new Vector3(
+					Mathf.Round(position.x / scaleX) * scaleX,
+					Mathf.Round(position.y / scaleY) * scaleY,
+					Mathf.Round(position.z / scaleZ) * scaleZ
+				);
 		}
 
 

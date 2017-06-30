@@ -11,7 +11,7 @@ namespace Doodads.Examples
 
 	public class AdressBook : MonoBehaviour
 	{
-		public ScrolledContactList contactListUI;
+		public ScrollableContactList contactListUI;
 
 		public List<Contact> contacts;
 
