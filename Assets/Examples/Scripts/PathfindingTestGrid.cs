@@ -18,7 +18,7 @@ namespace Doodads.Examples
 		public PathfindingTestTile tilePrefab;
 
 		[SerializeField, HideInInspector]
-		ComponentGridWithCosts<PathfindingTestTile> grid;
+		Grid grid;
 
 		[SerializeField]
 		int width, height;
@@ -66,13 +66,21 @@ namespace Doodads.Examples
 			while (transform.childCount != 0)
 				DestroyImmediate(transform.GetChild(0).gameObject);
 
-			grid = new ComponentGridWithCosts<PathfindingTestTile>(width, height, tilePrefab, transform);
+			grid = new Grid(width, height, tilePrefab, transform);
 		}
 
 
 		bool ExitCondition<T> (IGrid<T> grid, XY tile)
 		{
 			return tile.x == target.x && tile.y == target.y;
+		}
+
+		[Serializable]
+		public class Grid : ComponentGridWithCosts<PathfindingTestTile>
+		{
+			public Grid (int columnCount, int rowCount, PathfindingTestTile prefab, Transform root) : base(columnCount, rowCount, prefab, root)
+			{
+			}
 		}
 	}
 }
