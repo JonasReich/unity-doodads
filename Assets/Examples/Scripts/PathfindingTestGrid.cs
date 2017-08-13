@@ -21,7 +21,10 @@ namespace Doodads.Examples
 		Grid grid;
 
 		[SerializeField]
-		int width, height;
+		int width;
+		[SerializeField]
+		int height;
+
 		[SerializeField]
 		XY origin, target;
 
