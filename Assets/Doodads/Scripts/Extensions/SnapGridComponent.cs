@@ -1,7 +1,8 @@
-//-------------------------------------------
+﻿//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Doodads.Editor
 		// Settings
 		//-------------------------------------
 
-		public float scaleX, scaleY, scaleZ;
+		public float snapValue_X, snapValue_Y, snapValue_Z, snapValue_Rotation, snapValue_Scale;
 		public static Color red, green, blue;
 
 		public Vector3[]x_plane;
@@ -29,10 +30,10 @@ namespace Doodads.Editor
 		public Vector3[]y_plane_10;
 		public Vector3[]z_plane_10;
 
-
+		public bool isDirty = true;
 		public bool show = true;
 		public bool showX = true, showY = true, showZ = true;
-		public bool autoSnap = false;
+		public bool doSnapPosition = false, doSnapRotation = false, doSnapScale = false;
 
 		Material material;
 
@@ -44,12 +45,10 @@ namespace Doodads.Editor
 
 		private void OnDisable ()
 		{
-
 			Save();
 			EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 		}
-
-
+		
 		void OnPlaymodeStateChanged ()
 		{
 			if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -77,14 +76,24 @@ namespace Doodads.Editor
 				}
 			}
 		}
-		
+
 		public void Save ()
 		{
 			EditorPrefs.SetBool("SnapGrid_Show", show);
 			EditorPrefs.SetBool("SnapGrid_ShowX", showX);
 			EditorPrefs.SetBool("SnapGrid_ShowY", showY);
 			EditorPrefs.SetBool("SnapGrid_ShowZ", showZ);
-			EditorPrefs.SetBool("SnapGrid_AutoSnap", autoSnap);
+			EditorPrefs.SetBool("SnapGrid_DoSnapPosition", doSnapPosition);
+			EditorPrefs.SetBool("SnapGrid_DoSnapRotation", doSnapRotation);
+			EditorPrefs.SetBool("SnapGrid_DoSnapScale", doSnapScale);
+
+			EditorPrefs.SetFloat("SnapGrid_x", snapValue_X);
+			EditorPrefs.SetFloat("SnapGrid_y", snapValue_Y);
+			EditorPrefs.SetFloat("SnapGrid_z", snapValue_Z);
+
+			EditorPrefs.SetFloat("SnapGrid_rotation", snapValue_Rotation);
+			EditorPrefs.SetFloat("SnapGrid_scale", snapValue_Scale);
+
 		}
 
 		void Load ()
@@ -93,12 +102,80 @@ namespace Doodads.Editor
 			showX = EditorPrefs.GetBool("SnapGrid_ShowX");
 			showY = EditorPrefs.GetBool("SnapGrid_ShowY");
 			showZ = EditorPrefs.GetBool("SnapGrid_ShowZ");
-			autoSnap = EditorPrefs.GetBool("SnapGrid_AutoSnap");
+			doSnapPosition = EditorPrefs.GetBool("SnapGrid_DoSnapPosition");
+			doSnapRotation = EditorPrefs.GetBool("SnapGrid_DoSnapRotation");
+			doSnapScale = EditorPrefs.GetBool("SnapGrid_DoSnapScale");
+
+			snapValue_X = EditorPrefs.GetFloat("SnapGrid_x");
+			snapValue_Y = EditorPrefs.GetFloat("SnapGrid_y");
+			snapValue_Z = EditorPrefs.GetFloat("SnapGrid_z");
+
+			snapValue_Rotation = EditorPrefs.GetFloat("SnapGrid_rotation");
+			snapValue_Scale = EditorPrefs.GetFloat("SnapGrid_scale");
 		}
 
 		void LoadMaterial ()
 		{
 			material = Resources.Load("GridMaterial", typeof(Material)) as Material;
+		}
+
+		
+		/*
+		public void SnapRotation (Transform t)
+		{
+			var r = t.localEulerAngles;
+			r.Set(
+					Mathf.Round(r.x / snapValue_Rotation) * snapValue_Rotation,
+					Mathf.Round(r.y / snapValue_Rotation) * snapValue_Rotation,
+					Mathf.Round(r.z / snapValue_Rotation) * snapValue_Rotation
+			);
+			t.localEulerAngles = r;
+		}
+		*/
+
+		public void SnapPosition (Transform t)
+		{
+			t.position = new Vector3(
+					Mathf.Round(t.position.x / snapValue_X) * snapValue_X,
+					Mathf.Round(t.position.y / snapValue_Y) * snapValue_Y,
+					Mathf.Round(t.position.z / snapValue_Z) * snapValue_Z
+				);
+		}
+
+		public void SnapScale(Transform t)
+		{
+			t.localScale = new Vector3(
+					Mathf.Round(t.localScale.x / snapValue_Scale) * snapValue_Scale,
+					Mathf.Round(t.localScale.y / snapValue_Scale) * snapValue_Scale,
+					Mathf.Round(t.localScale.z / snapValue_Scale) * snapValue_Scale
+			);
+		}
+
+		private void Update ()
+		{
+			if (Application.isEditor)
+			{
+				/*
+				snapValue_X *= 2;
+				snapValue_Y *= 2;
+				snapValue_Z *= 2;
+				*/
+
+				foreach (Transform t in Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable))
+				{
+					if(doSnapPosition)
+						SnapPosition(t);
+
+					/*
+					// Doesn't work properly -> Snaps at random intervals??
+					if (doSnapRotation)
+						SnapRotation(t);
+					*/
+
+					if (doSnapScale)
+						SnapScale(t);
+				}
+			}
 		}
 
 		void OnDrawGizmos ()
@@ -109,22 +186,16 @@ namespace Doodads.Editor
 			//-------------------------------------
 			// Info
 			//-------------------------------------
-			
+
 			// call only if something has changed
 			if (x_plane == null || y_plane == null || z_plane == null ||
 				x_plane_10 == null || y_plane_10 == null || z_plane_10 == null ||
-				UpdateSnapValues())
+				isDirty)
 			{
-				UpdateGrid(ref x_plane, ref y_plane, ref z_plane, 100, scaleX, scaleY, scaleZ);
-				UpdateGrid(ref x_plane_10, ref y_plane_10, ref z_plane_10, 100 / 10, scaleX * 10, scaleY * 10, scaleZ * 10);
+				isDirty = false;
+				UpdateGrid(ref x_plane, ref y_plane, ref z_plane, 100, snapValue_X, snapValue_Y, snapValue_Z);
+				UpdateGrid(ref x_plane_10, ref y_plane_10, ref z_plane_10, 100 / 10, snapValue_X * 10, snapValue_Y * 10, snapValue_Z * 10);
 			}
-
-			//-------------------------------------
-			// Auto Snap
-			//-------------------------------------
-
-			if (autoSnap)
-				SnapToGrid();
 
 			if (show)
 			{
@@ -166,8 +237,7 @@ namespace Doodads.Editor
 				GL.End();
 			}
 		}
-
-
+		
 
 		private void UpdateGrid (
 			ref Vector3[] x_plane, ref Vector3[] y_plane, ref Vector3[] z_plane,
@@ -282,47 +352,6 @@ namespace Doodads.Editor
 					0
 				);
 			}
-		}
-
-		// Source: http://wiki.unity3d.com/index.php/SnapToGrid
-		public void SnapToGrid ()
-		{
-			scaleX *= 2;
-			scaleY *= 2;
-			scaleZ *= 2;
-
-			foreach (Transform t in Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable))
-			{
-				t.position = Snap(t.position);
-			}
-		}
-
-		public Vector3 Snap(Vector3 position)
-		{
-			return new Vector3(
-					Mathf.Round(position.x / scaleX) * scaleX,
-					Mathf.Round(position.y / scaleY) * scaleY,
-					Mathf.Round(position.z / scaleZ) * scaleZ
-				);
-		}
-
-
-		static float snapX_, snapY_, snapZ_;
-
-		// returns true if something has changed
-		bool UpdateSnapValues ()
-		{
-			scaleX = EditorPrefs.GetFloat("MoveSnapX") / 2;
-			scaleY = EditorPrefs.GetFloat("MoveSnapY") / 2;
-			scaleZ = EditorPrefs.GetFloat("MoveSnapZ") / 2;
-
-			bool result = (snapX_ != scaleX || snapY_ != scaleY || scaleZ != snapZ_);
-
-			snapX_ = scaleX;
-			snapY_ = scaleY;
-			snapZ_ = scaleZ;
-
-			return result;
 		}
 
 		static float Offset (int count, int upperBound0, float scale)

@@ -78,6 +78,8 @@ namespace Doodads.Editor
 
 		private void OnGUI ()
 		{
+			EditorGUI.BeginChangeCheck();
+
 			GUI.color = Color.white;
 			GUILayout.BeginVertical();
 
@@ -113,18 +115,23 @@ namespace Doodads.Editor
 			}
 
 			//-------------------------------------
-			// Snap Selected
-			//-------------------------------------
-
-			GUI.backgroundColor = Color.white;
-			if (GUILayout.Button("Snap Selected"))
-				SnapGridComponent.instance.SnapToGrid();
-
-			//-------------------------------------
 			// Auto Snap
 			//-------------------------------------
+			GUI.backgroundColor = Color.white;
+			SnapGridComponent.instance.doSnapPosition = GUILayout.Toggle(SnapGridComponent.instance.doSnapPosition, "Snap Position");
 
-			SnapGridComponent.instance.autoSnap = GUILayout.Toggle(SnapGridComponent.instance.autoSnap, "Auto Snap");
+			SnapGridComponent.instance.snapValue_X = EditorGUILayout.FloatField("X Movement Step", SnapGridComponent.instance.snapValue_X);
+			SnapGridComponent.instance.snapValue_Y = EditorGUILayout.FloatField("Y Movement Step", SnapGridComponent.instance.snapValue_Y);
+			SnapGridComponent.instance.snapValue_Z = EditorGUILayout.FloatField("Z Movement Step", SnapGridComponent.instance.snapValue_Z);
+
+			/*
+			// Doesn't work properly -> Snaps at random intervals??
+			SnapGridComponent.instance.doSnapRotation = GUILayout.Toggle(SnapGridComponent.instance.doSnapRotation, "Snap Rotation");
+			SnapGridComponent.instance.snapValue_Rotation = EditorGUILayout.FloatField("value", SnapGridComponent.instance.snapValue_Rotation);
+			*/
+
+			SnapGridComponent.instance.doSnapScale = GUILayout.Toggle(SnapGridComponent.instance.doSnapScale, "Snap Scale");
+			SnapGridComponent.instance.snapValue_Scale = EditorGUILayout.FloatField("Scale Step", SnapGridComponent.instance.snapValue_Scale);
 
 			//-------------------------------------
 			// End of window...
@@ -133,6 +140,8 @@ namespace Doodads.Editor
 			GUILayout.BeginHorizontal();
 			GUILayout.EndHorizontal();
 			EditorGUILayout.EndVertical();
+
+			SnapGridComponent.instance.isDirty = EditorGUI.EndChangeCheck();
 		}
 
 		void OnPlaymodeStateChanged ()
