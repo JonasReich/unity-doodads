@@ -1,9 +1,7 @@
-﻿//-------------------------------------------
+//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,15 +10,14 @@ namespace Doodads.Editor
 	/// <summary>
 	/// Controll the time scale of the game from inside the editor
 	/// </summary>
-	public class TimeScaleController
+	public static class TimeScaleController
 	{
-		private static GUIStyle style = null;
+		static GUIStyle style;
 
-		private static bool initialized;
-		private static void Init()
+		static bool initialized;
+		static void Init()
 		{
-			style = new GUIStyle();
-			style.normal.textColor = Color.yellow;
+			style = new GUIStyle {normal = {textColor = Color.yellow}};
 			initialized = true;
 		}
 
@@ -48,7 +45,7 @@ namespace Doodads.Editor
 				SceneView.onSceneGUIDelegate += OnScene;
 		}
 
-		private static void OnScene(SceneView sceneview)
+		static void OnScene(SceneView sceneview)
 		{
 			Handles.BeginGUI();
 			GUILayout.BeginArea(new Rect(20, 80, 150, 120));

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Doodads.UnityEvents
+namespace Doodads.UnityEventComponents
 {
 	/// <summary>
 	/// Standalone unity event component for chaining UnityEvents

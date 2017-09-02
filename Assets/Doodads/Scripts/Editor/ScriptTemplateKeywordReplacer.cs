@@ -10,7 +10,7 @@ namespace Doodads.Editor
 	/// <summary>
 	/// Extends the number of keywords that can be used in editor templates
 	/// </summary>
-	public class KeywordReplace : UnityEditor.AssetModificationProcessor
+	public class ScriptTemplateKeywordReplacer : UnityEditor.AssetModificationProcessor
 	{
 		//--------------------------------
 		// Source: https://forum.unity3d.com/threads/c-script-template-how-to-make-custom-changes.273191/

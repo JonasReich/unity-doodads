@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Doodads.UnityEvents
+namespace Doodads.UnityEventComponents
 {
 	/// <summary>
 	/// UnityEvent component that can be used as countdown timer

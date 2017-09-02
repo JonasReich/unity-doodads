@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Doodads.UnityEvents
+namespace Doodads.UnityEventComponents
 {
 	/// <summary>
 	/// Event component that has UnityEvents for the basic MonoBehaviour messages

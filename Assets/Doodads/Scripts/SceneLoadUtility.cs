@@ -1,4 +1,4 @@
-﻿//-------------------------------------------
+//-------------------------------------------
 // Copyright (c) 2017 - JonasReich
 //-------------------------------------------
 
@@ -32,8 +32,8 @@ namespace Doodads
 			foreach (var behaviour in behavioursToDisableOnSceneLoad)
 				behaviour.enabled = false;
 
-			foreach (var gameObject in objectsToDeactivateOnSceneLoad)
-				gameObject.SetActive(false);
+			foreach (var item in objectsToDeactivateOnSceneLoad)
+				item.SetActive(false);
 
 			Destroy(gameObject);
 		}

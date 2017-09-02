@@ -1,4 +1,4 @@
-﻿//-------------------------------------------
+//-------------------------------------------
 // (c) 2017 - Jonas Reich
 //-------------------------------------------
 
@@ -10,19 +10,19 @@ using UnityEngine;
 namespace Doodads.Editor
 {
 	/// <summary>
-	/// Save a list of colors in a scriptable prefab asset
+	/// Save a list of colors in a ColorPalette scriptable object
 	/// </summary>
-	public class ColorManager : EditorWindow
+	public class ColorPaletteEditor : EditorWindow
 	{
-		const string NAME = "colortable";
-		const string PATH = "Assets/Doodads/Resources/" + NAME + ".asset";
-		static ColorTable colorTable;
+		const string NAME = "colorpalette";
+		const string PATH = "Assets/Doodads/Scripts/Editor/ColorPaletteEditor/Resources/" + NAME + ".asset";
+		static ColorPalette colorPalette;
 		
 
 		[MenuItem("Tools/Color Manager")]
 		private static void ShowWindow ()
 		{
-			var window = GetWindow<ColorManager>("Colors");
+			var window = GetWindow<ColorPaletteEditor>("Colors");
 			window.Show();
 		}
 
@@ -53,16 +53,16 @@ namespace Doodads.Editor
 
 		void LoadColors ()
 		{
-			if (colorTable != null)
+			if (colorPalette != null)
 				return;
 			
-			colorTable = Resources.Load<ColorTable>(NAME);
+			colorPalette = Resources.Load<ColorPalette>(NAME);
 
-			if(colorTable == null)
+			if(colorPalette == null)
 			{
-				colorTable = CreateInstance<ColorTable>();
-				colorTable.Init();
-				AssetDatabase.CreateAsset(colorTable, PATH);
+				colorPalette = CreateInstance<ColorPalette>();
+				colorPalette.Init();
+				AssetDatabase.CreateAsset(colorPalette, PATH);
 				AssetDatabase.SaveAssets();
 				AssetDatabase.Refresh();
 			}
@@ -70,7 +70,7 @@ namespace Doodads.Editor
 
 		void SaveColors ()
 		{
-			EditorUtility.SetDirty(colorTable);
+			EditorUtility.SetDirty(colorPalette);
 			AssetDatabase.SaveAssets();
 		}
 
@@ -78,24 +78,24 @@ namespace Doodads.Editor
 		{
 			GUILayout.Space(15);
 
-			if (colorTable != null)
-				for (int i = 0; i < colorTable.colors.Count; i++)
+			if (colorPalette != null)
+				for (int i = 0; i < colorPalette.colors.Count; i++)
 				{
 					EditorGUILayout.BeginHorizontal();
 					GUILayout.Space(5);
 					if (GUILayout.Button("","ol minus",  GUILayout.Width(15), GUILayout.Height(15)))
 					{
-						colorTable.colors.Remove(colorTable.colors[i]);
+						colorPalette.colors.Remove(colorPalette.colors[i]);
 						break;
 					}
 
-					colorTable.colors[i] = EditorGUILayout.ColorField(colorTable.colors[i]);
+					colorPalette.colors[i] = EditorGUILayout.ColorField(colorPalette.colors[i]);
 
 
 					GUILayout.Space(5);
 					if (GUILayout.Button("copy"))
 					{
-						EditorGUIUtility.systemCopyBuffer = "#" + ColorUtility.ToHtmlStringRGBA(colorTable.colors[i]);
+						EditorGUIUtility.systemCopyBuffer = "#" + ColorUtility.ToHtmlStringRGBA(colorPalette.colors[i]);
 					}
 					if (GUILayout.Button("paste"))
 					{
@@ -104,7 +104,7 @@ namespace Doodads.Editor
 						if (colorName.StartsWith("#") == false)
 							colorName = "#" + colorName;
 						ColorUtility.TryParseHtmlString(colorName, out c);
-						colorTable.colors[i] = c;
+						colorPalette.colors[i] = c;
 						break;
 					}
 
@@ -118,7 +118,7 @@ namespace Doodads.Editor
 			GUILayout.Space(5);
 			if (GUILayout.Button("", "ol plus", GUILayout.Width(20), GUILayout.Height(15)))
 			{
-				colorTable.colors.Add(Color.white);
+				colorPalette.colors.Add(Color.white);
 				
 			}
 

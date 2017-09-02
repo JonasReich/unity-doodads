@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Doodads.UnityEvents
+namespace Doodads.UnityEventComponents
 {
 	/// <summary>
 	/// Collection of individual event "steps" that are activated sequentially
