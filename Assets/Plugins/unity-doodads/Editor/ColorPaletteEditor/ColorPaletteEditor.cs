@@ -15,9 +15,9 @@ namespace Doodads.Editor
 	public class ColorPaletteEditor : EditorWindow
 	{
 		const string NAME = "colorpalette";
-		const string PATH = "Assets/Doodads/Scripts/Editor/ColorPaletteEditor/Resources/" + NAME + ".asset";
+		const string PATH = "Assets/Plugins/Doodads/Editor/ColorPaletteEditor/Resources/" + NAME + ".asset";
 		static ColorPalette colorPalette;
-		
+
 
 		[MenuItem("Tools/Color Manager")]
 		private static void ShowWindow ()
@@ -55,7 +55,7 @@ namespace Doodads.Editor
 		{
 			if (colorPalette != null)
 				return;
-			
+
 			colorPalette = Resources.Load<ColorPalette>(NAME);
 
 			if(colorPalette == null)
@@ -119,7 +119,7 @@ namespace Doodads.Editor
 			if (GUILayout.Button("", "ol plus", GUILayout.Width(20), GUILayout.Height(15)))
 			{
 				colorPalette.colors.Add(Color.white);
-				
+
 			}
 
 			EditorGUILayout.EndHorizontal();
